@@ -1,0 +1,9 @@
+Package: me.lightmann.vinyl
+Name: Vinyl
+Depends: mobilesubstrate, firmware (>= 13.0), preferenceloader
+Version: 1.0.7
+Architecture: iphoneos-arm
+Description: A simplified look for the lockscreen music player!
+Maintainer: Lightmann
+Author: Lightmann
+Section: Tweaks
