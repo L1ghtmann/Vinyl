@@ -271,11 +271,6 @@
 		self.frame = CGRectMake(63, 50.5, (self.superview.frame.size.width-(self.frame.origin.x*2)), 54);
 
 		//since it's centered and we're flipping it, nothing needs to be done for RTL
-
-		//small form-factor device 
-		if(kHeight == 568){
-			self.frame = CGRectMake(48, 50.5, (self.superview.frame.size.width-(self.frame.origin.x*2)), 54);
-		}
 	}
 	else{
 		%orig;
@@ -357,11 +352,6 @@
 		if([UIApplication sharedApplication].userInterfaceLayoutDirection == UIUserInterfaceLayoutDirectionRightToLeft){
 			%orig(CGRectMake(frame.origin.x+30, frame.origin.y-225, (self.superview.frame.size.width-(self.frame.origin.x*2)+6),frame.size.height));
 		}
-
-		//small form-factor devices
-		if(kHeight == 568){
-			%orig(CGRectMake(frame.origin.x+25, frame.origin.y-225, (self.superview.frame.size.width-(self.frame.origin.x*2)),frame.size.height)); 
-		}
 	}
 	else{
 		%orig;
@@ -409,8 +399,8 @@
 			[self.artworkBackground setFrame:self.artworkView.frame];
 			[self.placeholderArtworkView setFrame:(CGRectMake(0, 0, (self.artworkBackground.frame.size.width*.48), (self.artworkBackground.frame.size.height*.48)))]; 
 			[self.placeholderArtworkView setCenter:self.artworkBackground.center];
-			
 			[self.shadow setFrame:self.placeholderArtworkView.frame];
+
 			self.artworkView.layer.cornerRadius = cornerRadius-8;//13 is default for player and 5 is default for artwork, so I cover the difference
 			self.artworkBackground.layer.cornerRadius = cornerRadius-8;
 			self.placeholderArtworkView.layer.cornerRadius = cornerRadius-8;
@@ -433,23 +423,24 @@
 
 			//Small form factor device support 
 			if(kHeight == 568){
-				self.routeLabel.frame = CGRectMake(self.routeLabel.frame.origin.x-13, self.routeLabel.frame.origin.y, self.routeLabel.frame.size.width, self.routeLabel.frame.size.height);
+				self.routeLabel.frame = CGRectMake(self.routeLabel.frame.origin.x-13, self.routeLabel.frame.origin.y+2, self.routeLabel.frame.size.width, self.routeLabel.frame.size.height);
 				[self.primaryMarqueeView.leftAnchor constraintEqualToAnchor:self.routeLabel.leftAnchor].active = true;
 				[self.secondaryMarqueeView.leftAnchor constraintEqualToAnchor:self.routeLabel.leftAnchor].active = true;
 				self.primaryMarqueeView.frame = CGRectMake(self.primaryMarqueeView.frame.origin.x-13, self.primaryMarqueeView.frame.origin.y, self.primaryMarqueeView.frame.size.width, self.primaryMarqueeView.frame.size.height);
 				self.secondaryMarqueeView.frame = CGRectMake(self.secondaryMarqueeView.frame.origin.x-13, self.secondaryMarqueeView.frame.origin.y, self.secondaryMarqueeView.frame.size.width, self.secondaryMarqueeView.frame.size.height);
 
-//STILL NEED TO FIX (?) //self.routingButton.frame = CGRectMake((self.routeLabel.frame.origin.x+self.routeLabel.frame.size.width-25), self.routeLabel.frame.origin.y+2, self.routingButton.frame.size.width, self.routingButton.frame.size.height);
+				self.routingButton.frame = CGRectMake(self.routingButton.frame.origin.x-15, self.routeLabel.frame.origin.y+1, self.routingButton.frame.size.width, self.routingButton.frame.size.height);
 
 				[self.artworkView setFrame:(CGRectMake(self.artworkView.frame.origin.x, self.artworkView.frame.origin.y+10, 100, 100))];	
 				[self.artworkBackground setFrame:self.artworkView.frame];
-				[self.placeholderArtworkView setFrame:(CGRectMake(self.artworkView.frame.origin.x, self.artworkView.frame.origin.y+10, self.placeholderArtworkView.frame.size.width, self.placeholderArtworkView.frame.size.height))];
-				[self.shadow setFrame:self.placeholderArtworkView.frame];
+				[self.placeholderArtworkView setFrame:(CGRectMake(0, 0, (self.artworkBackground.frame.size.width*.48), (self.artworkBackground.frame.size.height*.48)))]; 
+				[self.placeholderArtworkView setCenter:self.artworkBackground.center];
+				[self.shadow setCenter:self.placeholderArtworkView.center];
 			}
 
 				//correction for header Y movement and rountingbutton presence
 				if(showConnectButton){
-					self.routeLabel.frame = CGRectMake(self.routeLabel.frame.origin.x+13, self.routeLabel.frame.origin.y+13.5, self.routeLabel.frame.size.width, self.routeLabel.frame.size.height);
+					self.routeLabel.frame = CGRectMake(self.routeLabel.frame.origin.x+11.5, self.routeLabel.frame.origin.y+13.5, self.routeLabel.frame.size.width, self.routeLabel.frame.size.height);
 					self.primaryMarqueeView.frame = CGRectMake(self.primaryMarqueeView.frame.origin.x, self.primaryMarqueeView.frame.origin.y+13.5, self.primaryMarqueeView.frame.size.width, self.primaryMarqueeView.frame.size.height);
 					self.secondaryMarqueeView.frame = CGRectMake(self.secondaryMarqueeView.frame.origin.x, self.secondaryMarqueeView.frame.origin.y+13.5, self.secondaryMarqueeView.frame.size.width, self.secondaryMarqueeView.frame.size.height);
 
@@ -461,7 +452,7 @@
 					[self.artworkView setFrame:(CGRectMake(self.artworkView.frame.origin.x, self.artworkView.frame.origin.y+13.5, self.artworkView.frame.size.width, self.artworkView.frame.size.height))];
 					[self.artworkBackground setFrame:self.artworkView.frame];
 					[self.placeholderArtworkView setFrame:(CGRectMake(self.placeholderArtworkView.frame.origin.x, self.placeholderArtworkView.frame.origin.y+13.5, self.placeholderArtworkView.frame.size.width, self.placeholderArtworkView.frame.size.height))];
-					[self.shadow setFrame:self.placeholderArtworkView.frame];
+					[self.shadow setCenter:self.placeholderArtworkView.center];
 				}	
 		}
 		else{
@@ -600,7 +591,7 @@
 
 		//Small form factor device support 
 		if(kHeight == 568){
-			[self.artworkView setFrame:CGRectMake(-16,0,120,120)];
+			[self.artworkView setFrame:CGRectMake(-16,0,100,100)];
 			[self.placeholderArtworkView setFrame:self.artworkView.frame];
 			[self.artworkBackground setFrame:self.artworkView.frame];
 		}
@@ -624,6 +615,12 @@
 			if([UIApplication sharedApplication].userInterfaceLayoutDirection == UIUserInterfaceLayoutDirectionRightToLeft){
 				[self.primaryMarqueeView setFrame:CGRectMake((nextup2.origin.x-self.artworkView.frame.size.width-nextup2.size.width),nextup2.origin.y,nextup2.size.width,nextup2.size.height)];
 				[self.secondaryMarqueeView setFrame:CGRectMake((nextup3.origin.x-self.artworkView.frame.size.width-nextup3.size.width),nextup3.origin.y,nextup3.size.width,nextup3.size.height)];
+			}
+			
+			//Small form factor device support 
+			if(kHeight == 568){
+				[self.primaryMarqueeView setFrame:CGRectMake(nextup2.origin.x+34.5,nextup2.origin.y,nextup2.size.width,nextup2.size.height)];
+				[self.secondaryMarqueeView setFrame:CGRectMake(nextup3.origin.x+34.5,nextup3.origin.y,nextup3.size.width,nextup3.size.height)];
 			}
 	}
 	else{
