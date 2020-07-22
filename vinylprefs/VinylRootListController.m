@@ -1,3 +1,4 @@
+//Header image code from (Alexa) Litten (https://github.com/Litteeen) -- W appropriately attached MIT license
 #include "VinylRootListController.h"
 #import <spawn.h>
 
@@ -35,7 +36,7 @@
 	posix_spawn(&pid, "usr/bin/sbreload", NULL, NULL, (char *const *)args, NULL);
 }
 
-//Litteeen's (https://github.com/Litteeen) Magic
+//Litten's Magic
 - (void)viewDidLoad {
 
     [super viewDidLoad];

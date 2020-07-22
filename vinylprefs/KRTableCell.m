@@ -1,6 +1,13 @@
-#import "VinylTableCell.h"
+//
+// KRTableCell.m
+//  
+// This code is directly from HBTintedTableCell in Cephie 
+// Apache 2.0 License for code used in KRPrefsLicense located in preference bundle
+//
 
-@implementation VinylTableCell
+#import "KRTableCell.h"
+
+@implementation KRTableCell
 
 - (void)tintColorDidChange {
 	[super tintColorDidChange];

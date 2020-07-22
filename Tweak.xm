@@ -440,7 +440,7 @@
 
 				//correction for header Y movement and rountingbutton presence
 				if(showConnectButton){
-					self.routeLabel.frame = CGRectMake(self.routeLabel.frame.origin.x+11.5, self.routeLabel.frame.origin.y+13.5, self.routeLabel.frame.size.width, self.routeLabel.frame.size.height);
+					self.routeLabel.frame = CGRectMake(self.routeLabel.frame.origin.x+13, self.routeLabel.frame.origin.y+13.5, self.routeLabel.frame.size.width, self.routeLabel.frame.size.height);
 					self.primaryMarqueeView.frame = CGRectMake(self.primaryMarqueeView.frame.origin.x, self.primaryMarqueeView.frame.origin.y+13.5, self.primaryMarqueeView.frame.size.width, self.primaryMarqueeView.frame.size.height);
 					self.secondaryMarqueeView.frame = CGRectMake(self.secondaryMarqueeView.frame.origin.x, self.secondaryMarqueeView.frame.origin.y+13.5, self.secondaryMarqueeView.frame.size.width, self.secondaryMarqueeView.frame.size.height);
 

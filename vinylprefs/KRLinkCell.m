@@ -1,21 +1,30 @@
-#import "VinylLinkCell.h"
+//
+// KRLinkCell.m
+// Based on Cephei's link cell
+//
+// Apache 2.0 License for code used in KRPrefsLicense located in preference bundle
+//
+
+//Profile photo border removed by me
+
+#import "KRLinkCell.h"
 #import <Preferences/PSSpecifier.h>
 #import <UIKit/UIColor+Private.h>
 #import <UIKit/UIImage+Private.h>
 #import <version.h>
 
-@implementation VinylLinkCell
+@implementation KRLinkCell
 
 - (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier specifier:(PSSpecifier *)specifier 
 {
 	self = [super initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:reuseIdentifier specifier:specifier];
 
 	if (self) {
-
+		//_isBig = specifier.properties[@"big"] && ((NSNumber *)specifier.properties[@"big"]).boolValue;
 		_isBig = YES;
 
 		self.selectionStyle = UITableViewCellSelectionStyleBlue;
-		self.accessoryView = [[UIImageView alloc] initWithFrame:CGRectMake( 0, 0, 38, 38)];
+		self.accessoryView = [[UIImageView alloc] initWithFrame:CGRectMake( 0, 0, 38, 38)];//Image:[UIImage imageNamed:@"safari" inBundle:globalBundle]];
 
 		self.detailTextLabel.numberOfLines = _isBig ? 0 : 1;
 		self.detailTextLabel.text = specifier.properties[@"subtitle"] ?: @"";
@@ -41,6 +50,7 @@
 
 			_avatarView = [[UIView alloc] initWithFrame:self.imageView.bounds];
 			_avatarView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+			_avatarView.backgroundColor = [UIColor colorWithWhite:0.9f alpha:1];
 			_avatarView.userInteractionEnabled = NO;
 			_avatarView.clipsToBounds = YES;
 			_avatarView.layer.cornerRadius = IS_IOS_OR_NEWER(iOS_7_0) ? size / 2 : 4.f;
@@ -101,6 +111,7 @@
 	[super setSelected:arg1 animated:arg2];
 
 	if (!arg1) return;
+    //[[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"https://github.com/KritantaDev/Axon"] options:@{} completionHandler:nil];
 }
 
 - (BOOL)shouldShowAvatar 

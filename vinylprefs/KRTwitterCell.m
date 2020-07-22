@@ -1,27 +1,37 @@
-#import "VinylRedditCell.h" 
+//
+// KRTwitterCell.m
+// Twitter cell that locally loads pfps 
+//		based on Cephei Framework
+//
+// Apache 2.0 License for code used in KRPrefsLicense located in preference bundle
+//
+
+//Modified by me to link to reddit instead of twitter
+
+#import "KRTwitterCell.h"
 #import <Preferences/PSSpecifier.h>
 #import <UIKit/UIImage+Private.h>
 #import <Foundation/Foundation.h>
 
-@interface VinylLinkCell ()
+@interface KRLinkCell ()
 
 - (BOOL)shouldShowAvatar;
 
 @end
 
-@interface VinylRedditCell () {
+@interface KRTwitterCell () {
 	NSString *_user;
 }
 
 @end
 
-@implementation VinylRedditCell
+@implementation KRTwitterCell
 
 + (NSString *)_urlForUsername:(NSString *)user {
 
 	user = [user stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
 
-	  if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"reddit://"]]) {
+	if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"reddit://"]]) {
 		return [@"reddit:///user/" stringByAppendingString:user];
 	} else if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"apollo://"]]) {
 		return [@"apollo:///user/" stringByAppendingString:user];
@@ -36,7 +46,7 @@
 
 	if (self) {
 		UIImageView *imageView = (UIImageView *)self.accessoryView;
-		imageView.image = nil;
+		imageView.image = nil;//[UIImage imageNamed:@"twitter" inBundle:globalBundle];
 		[imageView sizeToFit];
 
 		_user = [specifier.properties[@"accountName"] copy];
@@ -78,7 +88,18 @@
 	if (self.avatarImage) {
 		return;
 	}
-	self.avatarImage = [UIImage imageNamed:[NSString stringWithFormat:@"/Library/PreferenceBundles/VinylPrefs.bundle/%@.png", _user]];
+	// TODO: fix this
+	self.avatarImage = [UIImage imageNamed:[NSString stringWithFormat:@"/Library/PreferenceBundles/AeaeaPrefs.bundle/%@.png", _user]];
+	/*
+	dispatch_async(dispatch_get_global_queue(0,0), ^{
+		NSData * data = [[NSData alloc] initWithContentsOfURL:[NSURL URLWithString:[NSString stringWithFormat:@"https://twitter.com/%@/profile_image?size=original", _user]]];
+		if ( data == nil )
+			return;
+		dispatch_async(dispatch_get_main_queue(), ^{
+			self.avatarImage = [UIImage imageWithData: data];
+		});
+		[data release];
+	});*/
 }
 
 @end

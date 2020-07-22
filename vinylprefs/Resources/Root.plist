@@ -12,7 +12,7 @@
         </dict>
 		<dict>
 		 	<key>cellClass</key>
-			<string>VinylRedditCell</string>
+			<string>KRTwitterCell</string>
 			<key>label</key>
 		    <string>Lightmann</string>
 			<key>accountName</key>
