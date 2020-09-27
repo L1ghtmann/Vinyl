@@ -45,11 +45,6 @@
 @property (nonatomic,retain) MediaControlsTransportStackView * transportStackView; 
 @end
 
-@interface MRPlatterViewController : UIViewController
-@property (assign,nonatomic) id delegate; 
-@property (nonatomic,retain) MediaControlsParentContainerView * parentContainerView; 
-@end
-
 @interface MPUMarqueeView : UIView
 @end
 
@@ -105,6 +100,21 @@
 
 @interface MediaControlsVolumeContainerView : UIView
 @property (nonatomic,retain) MediaControlsVolumeSlider * volumeSlider; 
+@end
+
+@interface MPUNowPlayingController : NSObject 
+-(id)init;
++(id)_current_MPUNowPlayingController;
++(id)currentArtwork;
+-(UIImage *)currentNowPlayingArtwork;
+-(void)startUpdating;
+@end
+
+@interface MRPlatterViewController : UIViewController
+@property (assign,nonatomic) id delegate; 
+@property (nonatomic,retain) MediaControlsParentContainerView * parentContainerView; 
+@property (nonatomic,copy) NSString * label;         
+@property (nonatomic,retain) MediaControlsHeaderView * nowPlayingHeaderView;  
 @end
 
 

@@ -6,7 +6,7 @@ include $(THEOS)/makefiles/common.mk
 
 TWEAK_NAME = Vinyl
 
-Vinyl_FILES = Tweak.xm
+Vinyl_FILES = Tweak/Tweak.xm Tweak/VinylManager.m
 Vinyl_CFLAGS = -fobjc-arc
 
 include $(THEOS_MAKE_PATH)/tweak.mk

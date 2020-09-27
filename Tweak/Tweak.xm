@@ -3,6 +3,7 @@
 //Vinyl
 
 #import "Headers.h"
+#import "VinylManager.h"
 #define kHeight [UIScreen mainScreen].bounds.size.height 
 
 //Transparency and corner radius of media player and sets player height
@@ -360,6 +361,52 @@
 %end
 
 
+//Get high-res artwork -- taken from Krit's Garden (https://github.com/KritantaDev/Garden) 
+%hook MPUNowPlayingController
+- (MPUNowPlayingController*)init{
+    id orig = %orig();
+
+    if (orig) {
+        [VinylManager sharedManager].MPUNowPlaying = orig;
+    }
+    return orig;
+}
+
+%new
++ (id)_current_MPUNowPlayingController{
+    return [VinylManager sharedManager].MPUNowPlaying;
+}
+
+%new
++ (id)currentArtwork{
+    if (![VinylManager sharedManager].MPUNowPlaying){
+
+        MPUNowPlayingController *nowPlayingController = [[%c(MPUNowPlayingController) alloc] init];
+        [nowPlayingController startUpdating];
+        return [nowPlayingController currentNowPlayingArtwork];
+    }
+
+    return [[VinylManager sharedManager].MPUNowPlaying currentNowPlayingArtwork];
+}
+%end 
+
+
+//set higher res artwork image to enlarged imageview (120x120)
+%hook MRPlatterViewController
+-(void)_updateOnScreenForStyle:(long long)arg1 {//method called only once per visual change to player (aka new song info)
+	%orig;
+
+	if(isEnabled && [self.label isEqualToString:@"MRPlatter-CoverSheet"])  {
+		double delayInSeconds = 0.1;	
+    	dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
+    	dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+			[self.nowPlayingHeaderView.artworkView setImage:[%c(MPUNowPlayingController) currentArtwork]];
+		});
+	} 
+}
+%end
+
+
 %hook MediaControlsHeaderView
 //fix size to fit the now moved routing button 
 - (void)setFrame:(CGRect)frame{
@@ -376,6 +423,7 @@
 		}
 	}
 }
+
 
 //aligment + changes size of album art
 -(void)layoutSubviews{
@@ -569,11 +617,16 @@
 
 
 %hook NextUpMediaHeaderView
-//sets artwork frame
+//sets up artworkView
 -(void)updateArtworkStyle{
 	%orig;
 
 	if(isEnabled && nxtUpInstalled && [self.superview.superview.superview isMemberOfClass:%c(CSMediaControlsView)]){
+		double delayInSeconds = 0.1;	
+    	dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
+    	dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+			[self.artworkView setImage:[%c(MPUNowPlayingController) currentArtwork]];
+		});
 		[self.artworkView setFrame:CGRectMake(-16,-9,120,120)];
 		[self.placeholderArtworkView setFrame:self.artworkView.frame];
 		[self.artworkBackground setFrame:self.artworkView.frame];
