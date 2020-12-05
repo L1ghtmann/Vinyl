@@ -1,4 +1,5 @@
 #import <UIKit/UIKit.h>
+#import <MediaRemote/MediaRemote.h>
 
 @interface MTCoreMaterialVisualStylingProvider : NSObject
 @property (nonatomic,copy,readonly) NSString * visualStyleSetName; 
@@ -102,14 +103,6 @@
 @property (nonatomic,retain) MediaControlsVolumeSlider * volumeSlider; 
 @end
 
-@interface MPUNowPlayingController : NSObject 
--(id)init;
-+(id)_current_MPUNowPlayingController;
-+(id)currentArtwork;
--(UIImage *)currentNowPlayingArtwork;
--(void)startUpdating;
-@end
-
 @interface MRPlatterViewController : UIViewController
 @property (assign,nonatomic) id delegate; 
 @property (nonatomic,retain) MediaControlsParentContainerView * parentContainerView; 
@@ -117,6 +110,11 @@
 @property (nonatomic,retain) MediaControlsHeaderView * nowPlayingHeaderView;  
 @end
 
+#define kHeight [UIScreen mainScreen].bounds.size.height 
+
+//local
+UIImage *highresImage;
+BOOL nxtUpInstalled;
 
 //prefs
 static BOOL isEnabled;
@@ -130,7 +128,6 @@ static CGFloat transparencyLevel;
 
 static int textcolor;
 
-
 // NextUp compatibility 
 @interface NextUpMediaHeaderView : MediaControlsHeaderView
 @end
@@ -140,5 +137,3 @@ static int textcolor;
 
 @interface BoundsChangeAwareView : UIView
 @end
-
-static BOOL nxtUpInstalled = NO;

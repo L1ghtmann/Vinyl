@@ -8,16 +8,8 @@
             <key>cell</key>
             <string>PSGroupCell</string>
             <key>label</key>
-            <string></string>
+            <string>Vinyl by Lightmann</string>
         </dict>
-		<dict>
-		 	<key>cellClass</key>
-			<string>KRTwitterCell</string>
-			<key>label</key>
-		    <string>Lightmann</string>
-			<key>accountName</key>
-			<string>_lightmann</string>
-		</dict>
 		<dict>
           <key>cell</key>
             <string>PSSwitchCell</string>
@@ -26,7 +18,7 @@
 			<key>defaults</key>
 			<string>me.lightmann.vinylprefs</string>
 			<key>label</key>
-            <string>Enabled</string>
+            <string>Enabled (Respring Required)</string>
             <key>key</key>
             <string>isEnabled</string>
             <key>PostNotification</key>
@@ -50,7 +42,7 @@
 			<key>label</key>
 			<string>Configuration</string>
 			<key>default</key>
-			<string>0</string>
+			<integer>0</integer>
 			<key>validTitles</key>
 			<array>
 				<string>Default</string>
@@ -114,11 +106,11 @@
 			<key>cell</key>
 			<string>PSSliderCell</string>
 			<key>default</key>
-			<string>13</string>
+			<integer>13</integer>
 			<key>min</key>
-			<string>0</string>
+			<integer>0</integer>
 			<key>max</key>
-			<string>60</string>
+			<integer>60</integer>
 			<key>showValue</key>
 			<true/>
 			<key>defaults</key>
@@ -140,11 +132,11 @@
 			<key>cell</key>
 			<string>PSSliderCell</string>
 			<key>default</key>
-			<string>100</string>
+			<integer>100</integer>
 			<key>min</key>
-			<string>0</string>
+			<integer>0</integer>
 			<key>max</key>
-			<string>100</string>
+			<integer>100</integer>
 			<key>showValue</key>
 			<true/>
 			<key>defaults</key>
@@ -172,7 +164,7 @@
 			<key>label</key>
 			<string>Textcolor</string>
 			<key>default</key>
-			<string>0</string>
+			<integer>2</integer>
 			<key>validTitles</key>
 			<array>
 				<string>Default</string>
@@ -181,9 +173,9 @@
 			</array>
 			<key>validValues</key>
 			<array>
-				<integer>0</integer>
-				<integer>1</integer>
 				<integer>2</integer>
+				<integer>1</integer>
+				<integer>0</integer>
 			</array>
 			<key>id</key>
 			<string>ModeCell</string>
@@ -195,8 +187,6 @@
 			<string>PSGroupCell</string>
 			<key>label</key>
 			<string></string>
-			<key>footerText</key>
-			<string>Vinyl by Lightmann</string>
 		</dict>
 		<dict>
 			<key>action</key>
