@@ -1,89 +1,43 @@
 #import <UIKit/UIKit.h>
 #import <MediaRemote/MediaRemote.h>
 
-@interface MTCoreMaterialVisualStylingProvider : NSObject
-@property (nonatomic,copy,readonly) NSString * visualStyleSetName; 
-@end
-
-@interface MTVisualStylingProvider : NSObject
-@property (getter=_coreMaterialVisualStylingProvider,nonatomic,retain) MTCoreMaterialVisualStylingProvider * coreMaterialVisualStylingProvider;   
-@end
-
 @interface UIView (Private)
--(void)setOverrideUserInterfaceStyle:(NSInteger)style;
-- (UIViewController *)_viewControllerForAncestor;                                                                                                                               
-@property (nonatomic,retain) MTVisualStylingProvider * visualStylingProvider; 
+-(UIViewController *)_viewControllerForAncestor;                                                                                                                               
 @end
 
 @interface MTMaterialView : UIView
 @end
 
 @interface PLPlatterView : UIView
-@property (nonatomic,retain) UIView * backgroundView; 
+@property (nonatomic,retain) MTMaterialView * backgroundView; 
+@property (nonatomic,retain) MTMaterialView * mainOverlayView; //extra view on iOS 12
 @end
 
-@interface CSMediaControlsViewController : UIViewController
-@end
-
-@interface CSAdjunctItemView : UIView{
+@interface SBDashBoardAdjunctItemView : UIView{ //player iOS 12
 	UIView* _platterView;
 }
 @end
 
-@interface MediaControlsTransportButton : UIButton
-@property (nonatomic,retain) UIImageView *imageView;
-@end
-
-@interface MediaControlsTransportStackView : UIView
-@property (nonatomic,retain) MediaControlsTransportButton * tvRemoteButton;       
-@property (nonatomic,retain) MediaControlsTransportButton * leftButton;           
-@property (nonatomic,retain) MediaControlsTransportButton * middleButton;         
-@property (nonatomic,retain) MediaControlsTransportButton * rightButton;          
-@property (nonatomic,retain) MediaControlsTransportButton * languageOptionsButton;   
-@end
-
-@interface MediaControlsParentContainerView : UIView
-@property (nonatomic,retain) MediaControlsTransportStackView * transportStackView; 
-@end
-
-@interface MPUMarqueeView : UIView
-@end
-
-@interface MPRouteLabel : UILabel
-@property (nonatomic,retain) UILabel * titleLabel;
-@property (assign,nonatomic) BOOL forcesUppercaseText;   
-@end
-
-@interface CCUICAPackageView : UIView
-@property (assign,nonatomic) double scale; 
-@end
-
-@interface MediaControlsRoutingButtonView : UIButton
-@property (nonatomic,retain) CCUICAPackageView * packageView; 
-@property (nonatomic,retain) CAShapeLayer * clear; //NextUp "x" (NUSkipButton)
-@end
-
-@interface MediaControlsHeaderView : UIView{
-	UILabel* _secondaryLabel;
+@interface CSAdjunctItemView : UIView{ //player iOS 13 & 14
+	UIView* _platterView;
 }
-@property (nonatomic,retain) UIImageView * artworkView; 
-@property (nonatomic,retain) UIImageView * placeholderArtworkView; 
-@property (nonatomic,retain) UIView * shadow;  
-@property (nonatomic,retain) MTMaterialView * artworkBackground;  
--(void)updateArtworkStyle;
-@property (nonatomic,retain) UILabel * primaryLabel;                           
-@property (nonatomic,retain) UILabel * secondaryLabel;            
-@property (nonatomic,retain) MPUMarqueeView * primaryMarqueeView; 
--(void)setPrimaryMarqueeView:(MPUMarqueeView *)arg1;
-@property (nonatomic,retain) MPUMarqueeView * secondaryMarqueeView;              
--(void)setSecondaryMarqueeView:(MPUMarqueeView *)arg1;
-@property (nonatomic,retain) MPRouteLabel * routeLabel; 
--(void)setRouteLabel:(MPRouteLabel *)arg1 ;
-@property (nonatomic,retain) MediaControlsRoutingButtonView * routingButton;
-@property (nonatomic,retain) UIButton * launchNowPlayingAppButton;                    
 @end
 
-@interface MediaControlsTimeControl : UIView
+@interface SBDashBoardMediaControlsViewController : UIViewController // iOS 12
+@end
+
+@interface CSMediaControlsViewController : UIViewController // iOS 13
+@end
+
+@interface MediaControlsTimeControl : UIView // iOS 12 & 13
+@property (nonatomic,retain) UILabel * elapsedTimeLabel;   
+@property (nonatomic,retain) UILabel * remainingTimeLabel; 
+@property (nonatomic,retain) UIView * elapsedTrack;      
+@property (nonatomic,retain) UIView * knobView;          
+@property (nonatomic,retain) UIView * remainingTrack;    
+@end
+
+@interface MRUNowPlayingTimeControlsView : UIView // iOS 14
 @property (nonatomic,retain) UILabel * elapsedTimeLabel;   
 @property (nonatomic,retain) UILabel * remainingTimeLabel; 
 @property (nonatomic,retain) UIView * elapsedTrack;      
@@ -95,45 +49,149 @@
 @property (nonatomic,readonly) UIView * thumbView; 
 @end
 
-@interface MediaControlsVolumeSlider : MPVolumeSlider
-@property (nonatomic,retain) MTVisualStylingProvider * visualStylingProvider; 
+@interface MediaControlsVolumeSlider : MPVolumeSlider // iOS 12 & 13
+-(void)setVisualStylingProvider:(id)arg1;
 @end
 
-@interface MediaControlsVolumeContainerView : UIView
+@interface MRUNowPlayingVolumeSlider : MPVolumeSlider // iOS 14
+-(void)setVisualStylingProvider:(id)arg1;
+@property (nonatomic,readonly) UIView * growingThumbView; 
+@end
+
+@interface MediaControlsVolumeContainerView : UIView // iOS 12 & 13
 @property (nonatomic,retain) MediaControlsVolumeSlider * volumeSlider; 
 @end
 
-@interface MRPlatterViewController : UIViewController
+@interface MRUNowPlayingVolumeControlsView : UIView // iOS 14
+@property (nonatomic,retain) MRUNowPlayingVolumeSlider * slider; 
+@end
+
+@interface MediaControlsTransportButton : UIButton // iOS 12 & 13
+@property (nonatomic,retain) UIImageView *imageView;
+@end
+
+@interface MRUTransportButton : UIButton // iOS 14
+@property (nonatomic,retain) UIImageView *imageView;
+-(void)setStylingProvider:(id)arg1;
+@end
+
+@interface MediaControlsTransportStackView : UIView // iOS 12 & 13
+@property (nonatomic,retain) MediaControlsTransportButton * tvRemoteButton;       
+@property (nonatomic,retain) MediaControlsTransportButton * leftButton;           
+@property (nonatomic,retain) MediaControlsTransportButton * middleButton;         
+@property (nonatomic,retain) MediaControlsTransportButton * rightButton;          
+@property (nonatomic,retain) MediaControlsTransportButton * languageOptionsButton;   
+@end
+
+@interface MRUNowPlayingTransportControlsView : UIView // iOS 14
+@property (nonatomic,retain) MRUTransportButton * tvRemoteButton;       
+@property (nonatomic,retain) MRUTransportButton * leftButton;           
+@property (nonatomic,retain) MRUTransportButton * middleButton;         
+@property (nonatomic,retain) MRUTransportButton * rightButton;          
+@property (nonatomic,retain) MRUTransportButton * languageOptionsButton;   
+@end
+
+@interface MediaControlsParentContainerView : UIView
+@end
+
+@interface CCUICAPackageView : UIView
+@property (assign,nonatomic) double scale; //only avaialble on iOS 13 
+@end
+
+@interface MediaControlsRoutingButtonView : UIButton // iOS 12 & 13
+@property (nonatomic,retain) CCUICAPackageView * packageView;  
+@end
+
+@interface MRUNowPlayingRoutingButton : UIButton // iOS 14
+@property (nonatomic,retain) CCUICAPackageView * packageView;  
+@end
+
+@interface MPRouteLabel : UILabel
+@property (nonatomic,retain) UILabel * titleLabel;
+@property (assign,nonatomic) BOOL forcesUppercaseText;   
+@end
+
+@interface MPUMarqueeView : UIView 
+@end
+
+@interface MRUNowPlayingLabelView : UIView
+@property (nonatomic,retain) UILabel * titleLabel;                           
+@property (nonatomic,retain) UILabel * subtitleLabel;            
+@property (nonatomic,retain) MPUMarqueeView * titleMarqueeView; 
+@property (nonatomic,retain) MPUMarqueeView * subtitleMarqueeView;              
+@property (nonatomic,retain) MPRouteLabel * routeLabel;  
+@end
+
+@interface MRUArtworkView : UIView 
+@property (nonatomic, retain) UIImage *iconImage;
+@property (nonatomic, retain) UIImage *plceholderImage;
+@property (nonatomic, retain) UIImage *artworkImage;
+@property (nonatomic, retain) UIImageView *iconView; 
+@property (nonatomic, retain) UIView *iconShadowView;
+@property (nonatomic, retain) UIImageView *artworkImageView;
+@property (nonatomic, retain) UIView *artworkShadowView;
+@property (nonatomic, retain) UIImageView *placeholderImageView; 
+@property (nonatomic, retain) UIView *placeholderBackground; 
+@end
+
+@interface MediaControlsHeaderView : UIView{ // iOS 12 & 13
+	UILabel* _secondaryLabel;
+}
+@property (nonatomic,retain) UIImageView * artworkView; 
+@property (nonatomic,retain) UIImageView * placeholderArtworkView; 
+@property (nonatomic,retain) UIView * shadow;  
+@property (nonatomic,retain) MTMaterialView * artworkBackground;  
+@property (nonatomic,retain) UILabel * primaryLabel;                           
+@property (nonatomic,retain) UILabel * secondaryLabel;            
+@property (nonatomic,retain) MPUMarqueeView * primaryMarqueeView; 
+@property (nonatomic,retain) MPUMarqueeView * secondaryMarqueeView;              
+@property (nonatomic,retain) MPRouteLabel * routeLabel; 
+@property (nonatomic,retain) MediaControlsRoutingButtonView * routingButton;
+@property (nonatomic,retain) UIButton * launchNowPlayingAppButton;                    
+@end
+
+@interface MRUNowPlayingHeaderView : UIView // iOS 14
+@property (nonatomic,retain) MRUArtworkView * artworkView; 
+@property (nonatomic,retain) MRUNowPlayingLabelView * labelView;            
+@property (nonatomic,retain) MRUNowPlayingRoutingButton * routingButton;
+@property (nonatomic,retain) MRUTransportButton * transportButton;  
+@end
+
+@interface MRUNowPlayingControlsView : UIView
+@property (nonatomic, retain) MRUNowPlayingHeaderView *headerView;
+@property (nonatomic, retain) MRUNowPlayingTimeControlsView *timeControlsView;
+@property (nonatomic, retain) MRUNowPlayingTransportControlsView *transportControlsView;
+@property (nonatomic, retain) MRUNowPlayingVolumeControlsView *volumeControlsView;
+@end
+
+@interface MRUNowPlayingView : UIView 
+@property (nonatomic, retain) MRUNowPlayingControlsView *controlsView;
+@end
+
+@interface MRPlatterViewController : UIViewController // iOS 12 & 13
 @property (assign,nonatomic) id delegate; 
 @property (nonatomic,retain) MediaControlsParentContainerView * parentContainerView; 
 @property (nonatomic,copy) NSString * label;         
 @property (nonatomic,retain) MediaControlsHeaderView * nowPlayingHeaderView;  
 @end
 
-#define kHeight [UIScreen mainScreen].bounds.size.height 
+@interface MRUNowPlayingViewController : UIViewController // iOS 14
+@property (assign,nonatomic) id delegate;  //LS has no delegate, but CC does
+@property (nonatomic,readonly) int context; //2 on LS || 1 on CC
+@property (nonatomic, retain) MRUNowPlayingView *viewIfLoaded; // middle-man view
+@end
 
 //local
 UIImage *highresImage;
-BOOL nxtUpInstalled;
 
 //prefs
 static BOOL isEnabled;
 
 static int configuration;
-static BOOL showConnectButton = NO;
-static BOOL stndRouteLabel = NO;
+static BOOL showConnectButton;
+static BOOL stndRouteLabel;
 static CGFloat cornerRadius;
 
 static CGFloat transparencyLevel;
 
 static int textcolor;
-
-// NextUp compatibility 
-@interface NextUpMediaHeaderView : MediaControlsHeaderView
-@end
-
-@interface CSMediaControlsView : UIView
-@end
-
-@interface BoundsChangeAwareView : UIView
-@end
