@@ -45,17 +45,15 @@
 	%orig;
 
 	MRPlatterViewController *controller = (MRPlatterViewController *)[self _viewControllerForAncestor];
-	if([controller.delegate isKindOfClass:%c(SBDashBoardMediaControlsViewController)]){
-		if(textcolor < 2){
-			if(self.leftButton.layer.filters.count) self.leftButton.layer.filters = nil;
-			[self.leftButton setTintColor:[UIColor colorWithWhite:textcolor alpha:1]];
+	if([controller.delegate isKindOfClass:%c(SBDashBoardMediaControlsViewController)] && textcolor < 2){
+		if(self.leftButton.layer.filters.count) self.leftButton.layer.filters = nil;
+		[self.leftButton setTintColor:[UIColor colorWithWhite:textcolor alpha:1]];
 
-			if(self.middleButton.layer.filters.count) self.middleButton.layer.filters = nil;
-			[self.middleButton setTintColor:[UIColor colorWithWhite:textcolor alpha:1]];
+		if(self.middleButton.layer.filters.count) self.middleButton.layer.filters = nil;
+		[self.middleButton setTintColor:[UIColor colorWithWhite:textcolor alpha:1]];
 
-			if(self.rightButton.layer.filters.count) self.rightButton.layer.filters = nil;
-			[self.rightButton setTintColor:[UIColor colorWithWhite:textcolor alpha:1]];
-		}			
+		if(self.rightButton.layer.filters.count) self.rightButton.layer.filters = nil;
+		[self.rightButton setTintColor:[UIColor colorWithWhite:textcolor alpha:1]];			
 	}
 }
 %end
@@ -78,13 +76,14 @@
 //progress bar
 %hook MediaControlsTimeControl
 //positioning 
--(void)_updateSliderPosition{
-	%orig;
-
+-(void)setFrame:(CGRect)frame{
 	MRPlatterViewController *controller = (MRPlatterViewController *)[self _viewControllerForAncestor];
-	if([controller.delegate isKindOfClass:%c(SBDashBoardMediaControlsViewController)] && ((configuration == 1) || (configuration == 3))){
-		[self setFrame:CGRectMake(63, 25, (self.superview.frame.size.width-(self.frame.origin.x*2)), 54)];
+	if([controller.delegate isKindOfClass:%c(SBDashBoardMediaControlsViewController)] && (configuration == 1 || configuration == 3)){
+		%orig(CGRectMake(63, 25, (self.superview.frame.size.width-126), 54));
 		//since it's centered and we're flipping it, nothing needs to be done for RTL
+	}
+	else{
+		%orig;
 	}
 }
 
@@ -93,10 +92,20 @@
 	%orig;
 
 	MRPlatterViewController *controller = (MRPlatterViewController *)[self _viewControllerForAncestor];
-	if([controller.delegate isKindOfClass:%c(SBDashBoardMediaControlsViewController)] && ((configuration == 1) || (configuration == 3))){
+	if([controller.delegate isKindOfClass:%c(SBDashBoardMediaControlsViewController)] && (configuration == 1 || configuration == 3)){
 		[self.knobView setHidden:YES];
 		[self.elapsedTimeLabel setHidden:YES];
 		[self.remainingTimeLabel setHidden:YES];
+	}
+}
+
+//coloring
+-(void)_updateStyle{
+	%orig;
+
+	MRPlatterViewController *controller = (MRPlatterViewController *)[self _viewControllerForAncestor];
+	if([controller.delegate isKindOfClass:%c(SBDashBoardMediaControlsViewController)] && (configuration == 1 || configuration == 3) && textcolor < 2){
+		[self.elapsedTrack setBackgroundColor:[UIColor colorWithWhite:textcolor alpha:1]];      
 	}
 }
 
@@ -117,21 +126,6 @@
 				//rotate 180 degrees about the origin (to make it start on the right side)
 				self.transform = CGAffineTransformRotate(self.transform, M_PI);
 			}
-		}
-	}
-}
-
-//coloring
--(void)_updateStyle{
-	%orig;
-
-	MRPlatterViewController *controller = (MRPlatterViewController *)[self _viewControllerForAncestor];
-	if([controller.delegate isKindOfClass:%c(SBDashBoardMediaControlsViewController)] && (configuration == 1 || configuration == 3)){
-		if(textcolor < 2){
-			[self.elapsedTrack setBackgroundColor:[UIColor colorWithWhite:textcolor alpha:1]];      
-		}
-		else{
-			[self.elapsedTrack setBackgroundColor:[UIColor colorWithWhite:1 alpha:1]];
 		}
 	}
 }
@@ -315,12 +309,6 @@
 				[MSHookIvar<CALayer*>(self.routingButton.packageView, "_packageLayer") setBackgroundColor:[UIColor colorWithWhite:textcolor alpha:1].CGColor];
 				[MSHookIvar<CALayer*>(self.routingButton.packageView, "_packageLayer") setCornerRadius:18];
 			}
-			else{
-				//second label's original color is consistent for some reason, so go off of that
-				[self.primaryLabel setTextColor:self.secondaryLabel.textColor];
-				[self.routeLabel setTextColor:self.secondaryLabel.textColor];
-				[self.routeLabel.titleLabel setTextColor:self.secondaryLabel.textColor];
-			}
 
 			if(showConnectButton){
 				[self.routingButton setHidden:NO];
@@ -383,17 +371,15 @@
 	%orig;
 
 	MRPlatterViewController *controller = (MRPlatterViewController *)[self _viewControllerForAncestor];
-	if([controller.delegate isKindOfClass:%c(CSMediaControlsViewController)]){
-		if(textcolor < 2){
-			if(self.leftButton.imageView.layer.filters.count) self.leftButton.imageView.layer.filters = nil;
-			[self.leftButton.imageView setTintColor:[UIColor colorWithWhite:textcolor alpha:1]];
+	if([controller.delegate isKindOfClass:%c(CSMediaControlsViewController)] && textcolor < 2){
+		if(self.leftButton.imageView.layer.filters.count) self.leftButton.imageView.layer.filters = nil;
+		[self.leftButton.imageView setTintColor:[UIColor colorWithWhite:textcolor alpha:1]];
 
-			if(self.middleButton.imageView.layer.filters.count) self.middleButton.imageView.layer.filters = nil;
-			[self.middleButton.imageView setTintColor:[UIColor colorWithWhite:textcolor alpha:1]];
+		if(self.middleButton.imageView.layer.filters.count) self.middleButton.imageView.layer.filters = nil;
+		[self.middleButton.imageView setTintColor:[UIColor colorWithWhite:textcolor alpha:1]];
 
-			if(self.rightButton.imageView.layer.filters.count) self.rightButton.imageView.layer.filters = nil;
-			[self.rightButton.imageView setTintColor:[UIColor colorWithWhite:textcolor alpha:1]];
-		}		
+		if(self.rightButton.imageView.layer.filters.count) self.rightButton.imageView.layer.filters = nil;
+		[self.rightButton.imageView setTintColor:[UIColor colorWithWhite:textcolor alpha:1]];		
 	}
 }
 %end
@@ -415,6 +401,40 @@
 
 //progress bar
 %hook MediaControlsTimeControl
+//positioning
+-(void)setFrame:(CGRect)frame{
+	MRPlatterViewController *controller = (MRPlatterViewController *)[self _viewControllerForAncestor];
+	if([controller.delegate isKindOfClass:%c(CSMediaControlsViewController)] && (configuration == 1 || configuration == 3)){
+		%orig(CGRectMake(63, 25, (self.superview.frame.size.width-126), 54));
+		//since it's centered and we're flipping it, nothing needs to be done for RTL
+	}
+	else{
+		%orig;
+	}
+}
+
+//hide knob and duration labels
+-(void)updateSliderConstraint{	
+	%orig;
+
+	MRPlatterViewController *controller = (MRPlatterViewController *)[self _viewControllerForAncestor];
+	if([controller.delegate isKindOfClass:%c(CSMediaControlsViewController)] && (configuration == 1 || configuration == 3)){
+		[self.knobView setHidden:YES];
+		[self.elapsedTimeLabel setHidden:YES];
+		[self.remainingTimeLabel setHidden:YES];
+	}
+}
+
+//coloring
+-(void)_updateStyle{
+	%orig;
+
+	MRPlatterViewController *controller = (MRPlatterViewController *)[self _viewControllerForAncestor];
+	if([controller.delegate isKindOfClass:%c(CSMediaControlsViewController)] && (configuration == 1 || configuration == 3) && textcolor < 2){
+		[self.elapsedTrack setBackgroundColor:[UIColor colorWithWhite:textcolor alpha:1]];      
+	}
+}
+
 //hide and RTL support
 -(void)setTimeControlOnScreen:(BOOL)arg1{
 	%orig;
@@ -433,44 +453,6 @@
 				self.transform = CGAffineTransformRotate(self.transform, M_PI);
 			}
 		}
-	}
-}
-
-//coloring
--(void)_updateStyle{
-	%orig;
-
-	MRPlatterViewController *controller = (MRPlatterViewController *)[self _viewControllerForAncestor];
-	if([controller.delegate isKindOfClass:%c(CSMediaControlsViewController)] && (configuration == 1 || configuration == 3)){
-		if(textcolor < 2){
-			[self.elapsedTrack setBackgroundColor:[UIColor colorWithWhite:textcolor alpha:1]];      
-		}
-		else{
-			if(self.traitCollection.userInterfaceStyle == 2){
-				[self.elapsedTrack setBackgroundColor:[UIColor colorWithWhite:1 alpha:1]];
-			}
-			else{
-				[self.elapsedTrack setBackgroundColor:[UIColor colorWithWhite:0 alpha:1]];
-			}
-		}
-	}
-}
-
-//positioning + hide knob and duration labels
--(void)updateSliderConstraint{
-	%orig;
-
-	MRPlatterViewController *controller = (MRPlatterViewController *)[self _viewControllerForAncestor];
-	if([controller.delegate isKindOfClass:%c(CSMediaControlsViewController)] && (configuration == 1 || configuration == 3)){
-		[self.heightAnchor constraintEqualToConstant:54].active = true;
-		[self.widthAnchor constraintEqualToConstant:(self.superview.frame.size.width-126)].active = true; 
-		[self.bottomAnchor constraintEqualToAnchor:self.superview.bottomAnchor constant:-(self.frame.origin.x/2)+2].active = true;
-		[self.leftAnchor constraintEqualToAnchor:self.superview.leftAnchor constant:63].active = true;
-		[self setTranslatesAutoresizingMaskIntoConstraints:NO];
-		
-		[self.knobView setHidden:YES];
-		[self.elapsedTimeLabel setHidden:YES];
-		[self.remainingTimeLabel setHidden:YES];
 	}
 }
 %end
@@ -643,12 +625,6 @@
 				[MSHookIvar<UIView*>(self.routingButton.packageView, "_packageContentView") setBackgroundColor:[UIColor colorWithWhite:textcolor alpha:1]];
 				[MSHookIvar<UIView*>(self.routingButton.packageView, "_packageContentView").layer setCornerRadius:18];
 			}
-			else{
-				//second label's original color is consistent for some reason, so go off of that
-				[self.primaryLabel setTextColor:self.secondaryLabel.textColor];
-				[self.routeLabel setTextColor:self.secondaryLabel.textColor];
-				[self.routeLabel.titleLabel setTextColor:self.secondaryLabel.textColor];
-			}
 
 			if(showConnectButton){
 				[self.routingButton setHidden:NO];
@@ -739,6 +715,38 @@
 
 //progress bar
 %hook MRUNowPlayingTimeControlsView
+//positioning 
+-(void)setFrame:(CGRect)frame{
+	MRUNowPlayingViewController *controller = (MRUNowPlayingViewController *)[self _viewControllerForAncestor];
+	if(controller.context == 2){
+		if(configuration == 1){ //normal
+			%orig(CGRectMake(frame.origin.x+45,104.5,frame.size.width-(self.frame.origin.x*2),frame.size.height/2)); 
+		}
+		else if(configuration == 3){ //if volume bar is present (meaning controlsview has moved)
+			%orig(CGRectMake(frame.origin.x+45,120.5,frame.size.width-(self.frame.origin.x*2),frame.size.height/2)); //adjust for controlsview movement (Y: -16)
+		}
+	}
+	else{									
+		%orig;
+	}
+}
+
+//coloring + hide knob and duration labels
+-(void)updateVisibility{
+	%orig;
+
+	MRUNowPlayingViewController *controller = (MRUNowPlayingViewController *)[self _viewControllerForAncestor];
+	if(controller.context == 2 && (configuration == 1 || configuration == 3)){
+		[self.knobView setHidden:YES];
+		[self.elapsedTimeLabel setHidden:YES];
+		[self.remainingTimeLabel setHidden:YES];
+
+		if(textcolor < 2){
+			[self.elapsedTrack setBackgroundColor:[UIColor colorWithWhite:textcolor alpha:1]];      
+		}
+	}
+}
+
 //hide and RTL support
 -(void)setOnScreen:(BOOL)arg1{
 	%orig;
@@ -757,46 +765,6 @@
 				self.transform = CGAffineTransformRotate(self.transform, M_PI);
 			}
 		}
-	}
-}
-
-//coloring + hide knob and duration labels
--(void)updateVisibility{
-	%orig;
-
-	MRUNowPlayingViewController *controller = (MRUNowPlayingViewController *)[self _viewControllerForAncestor];
-	if(controller.context == 2 && (configuration == 1 || configuration == 3)){
-		[self.knobView setHidden:YES];
-		[self.elapsedTimeLabel setHidden:YES];
-		[self.remainingTimeLabel setHidden:YES];
-
-		if(textcolor < 2){
-			[self.elapsedTrack setBackgroundColor:[UIColor colorWithWhite:textcolor alpha:1]];      
-		}
-		else{
-			if(self.traitCollection.userInterfaceStyle == 2){
-				[self.elapsedTrack setBackgroundColor:[UIColor colorWithWhite:1 alpha:1]];
-			}
-			else{
-				[self.elapsedTrack setBackgroundColor:[UIColor colorWithWhite:0 alpha:1]];
-			}
-		}
-	}
-}
-
-//positioning 
--(void)setFrame:(CGRect)frame{
-	MRUNowPlayingViewController *controller = (MRUNowPlayingViewController *)[self _viewControllerForAncestor];
-	if(controller.context == 2){
-		if(configuration == 1){ //normal
-			%orig(CGRectMake(frame.origin.x+45,104.5,frame.size.width-(self.frame.origin.x*2),frame.size.height/2)); 
-		}
-		else if(configuration == 3){ //if volume bar is present (meaning controlsview has moved)
-			%orig(CGRectMake(frame.origin.x+45,120.5,frame.size.width-(self.frame.origin.x*2),frame.size.height/2)); //adjust for controlsview movement (Y: -16)
-		}
-	}
-	else{									
-		%orig;
 	}
 }
 %end
@@ -987,12 +955,6 @@
 
 			[MSHookIvar<UIView*>(self.routingButton.packageView, "_packageContentView") setBackgroundColor:[UIColor colorWithWhite:textcolor alpha:1]];
 			[MSHookIvar<UIView*>(self.routingButton.packageView, "_packageContentView").layer setCornerRadius:18];
-		}
-		else{
-			//second label's original color is consistent for some reason, so go off of that
-			[self.labelView.titleLabel setTextColor:self.labelView.subtitleLabel.textColor];
-			[self.labelView.routeLabel setTextColor:self.labelView.subtitleLabel.textColor];
-			[self.labelView.routeLabel.titleLabel setTextColor:self.labelView.subtitleLabel.textColor];
 		}
 
 		if(showConnectButton){

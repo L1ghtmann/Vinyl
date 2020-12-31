@@ -153,6 +153,8 @@
             <string>PSGroupCell</string>
             <key>label</key>
             <string>Text and controls color</string>
+			<key>footerText</key>
+			<string>*Some changes require a respring in order to take effect*</string>
         </dict>
        <dict>
 			<key>cell</key>
