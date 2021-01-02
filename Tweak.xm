@@ -1002,7 +1002,7 @@ void preferencesChanged(){
 		if(version >= 12 && version < 13) {
 			%init(Tweak_12);
 		} 
-		else if (version >= 13 && version < 14) {
+		else if (version >= 13 && version < 14.2) {
 			%init(Tweak_13);
 		}
 		else{
