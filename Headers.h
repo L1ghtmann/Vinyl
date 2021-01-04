@@ -2,7 +2,8 @@
 #import <MediaRemote/MediaRemote.h>
 
 @interface UIView (Private)
--(UIViewController *)_viewControllerForAncestor;                                                                                                                               
+-(UIViewController *)_viewControllerForAncestor; 
+-(void)setOverrideUserInterfaceStyle:(NSInteger)style;
 @end
 
 @interface MTMaterialView : UIView
@@ -10,7 +11,6 @@
 
 @interface PLPlatterView : UIView
 @property (nonatomic,retain) MTMaterialView * backgroundView; 
-@property (nonatomic,retain) MTMaterialView * mainOverlayView; //extra view on iOS 12
 @end
 
 @interface SBDashBoardAdjunctItemView : UIView{ //player iOS 12
@@ -191,6 +191,8 @@ static int configuration;
 static BOOL showConnectButton;
 static BOOL stndRouteLabel;
 static CGFloat cornerRadius;
+
+static CGFloat controlSpacing;
 
 static CGFloat transparencyLevel;
 

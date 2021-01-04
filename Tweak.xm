@@ -13,10 +13,14 @@
 	%orig;
 
 	PLPlatterView *platterView = (PLPlatterView*)MSHookIvar<UIView*>(self, "_platterView");
-	[platterView.backgroundView setAlpha:transparencyLevel/100];
-	[platterView.backgroundView.layer setCornerRadius:cornerRadius];
-	[platterView.mainOverlayView setAlpha:transparencyLevel/100];
-	[platterView.mainOverlayView.layer setCornerRadius:cornerRadius];
+	for(UIView *view in platterView.subviews){
+		if([view isMemberOfClass:%c(MTMaterialView)]){
+			for(UIView *subview in view.subviews){
+				[subview setAlpha:transparencyLevel/100];
+				[subview.layer setCornerRadius:cornerRadius];
+			}
+		}
+	}
 			
 	//Use constraints so it's dynamic and works with listview (parent container)
 	[self.heightAnchor constraintEqualToConstant:132.5].active = true;
@@ -30,7 +34,7 @@
 -(void)setFrame:(CGRect)frame{						
 	MRPlatterViewController *controller = (MRPlatterViewController *)[self _viewControllerForAncestor];
 	if([controller.delegate isKindOfClass:%c(SBDashBoardMediaControlsViewController)]){
-		CGRect reference = CGRectMake(120, 0, self.superview.frame.size.width-120, frame.size.height-20); //make frame for remaining 2/3 of player (excluding artwork (120x120)) 
+		CGRect reference = CGRectMake(120-(controlSpacing/2), 0, self.superview.frame.size.width-120+controlSpacing, frame.size.height-20); //make frame for remaining 2/3 of player (excluding artwork (120x120)) 
 		%orig(CGRectMake(frame.origin.x, frame.origin.y, reference.size.width*1.25, reference.size.height));  //change size of controls
 		[self setCenter:CGPointMake(CGRectGetMidX(reference), self.frame.size.height/2)]; //set the center of the controls in the reference rect 
 		[self setClipsToBounds:YES]; 
@@ -175,7 +179,7 @@
 %end
 
 
-//Get highres artwork -- taken from Litteeen's Lobelias (https://github.com/Litteeen/Lobelias/)
+//Get highres artwork -- taken from Litten's Lobelias (https://github.com/Litteeen/Lobelias/)
 %hook SBMediaController
 -(void)setNowPlayingInfo:(id)arg1{
 	%orig;
@@ -196,9 +200,7 @@
 	%orig;
 
 	if([self.label isEqualToString:@"MRPlatter-CoverSheet"] && highresImage) {
-		double delayInSeconds = 0.1;	
-    	dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
-    	dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+		dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.1 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
 			[self.nowPlayingHeaderView.artworkView setImage:highresImage];
 		});
 	} 
@@ -266,12 +268,12 @@
 
 			//RTL support 
 			if([UIApplication sharedApplication].userInterfaceLayoutDirection == UIUserInterfaceLayoutDirectionRightToLeft){
-				[self.artworkView setFrame:CGRectMake(-(self.superview.frame.size.width), self.artworkView.frame.origin.y, 120, 120)];
+				[self.artworkView setFrame:CGRectMake((-self.superview.frame.size.width)+self.artworkView.frame.origin.x+68, self.artworkView.frame.origin.y, 120, 120)];
 				[self.artworkBackground setFrame:self.artworkView.frame];
 				[self.placeholderArtworkView setFrame:CGRectMake(self.placeholderArtworkView.frame.origin.x, self.placeholderArtworkView.frame.origin.y, 60, 60)];
 				[self.placeholderArtworkView setCenter:self.artworkBackground.center];
 				[self.shadow setFrame:self.placeholderArtworkView.frame];
-				[self.launchNowPlayingAppButton setFrame:self.artworkView.frame];  
+				[self.launchNowPlayingAppButton setFrame:self.artworkView.frame];
 			}
 		}
 	}
@@ -356,7 +358,7 @@
 -(void)setFrame:(CGRect)frame{
 	MRPlatterViewController *controller = (MRPlatterViewController *)[self _viewControllerForAncestor];
 	if([controller.delegate isKindOfClass:%c(CSMediaControlsViewController)]){
-		CGRect reference = CGRectMake(120, 0, self.superview.frame.size.width-120, frame.size.height-20); //make frame for remaining 2/3 of player (excluding artwork (120x120)) 
+		CGRect reference = CGRectMake(120-(controlSpacing/2), 0, self.superview.frame.size.width-120+controlSpacing, frame.size.height-20); //make frame for remaining 2/3 of player (excluding artwork (120x120)) 
 		%orig(CGRectMake(frame.origin.x, frame.origin.y, reference.size.width*1.25, reference.size.height));  //change size of controls
 		[self setCenter:CGPointMake(CGRectGetMidX(reference), self.frame.size.height/2)]; //set the center of the controls in the reference rect 
 		[self setClipsToBounds:YES]; 
@@ -491,7 +493,6 @@
 %end
 
 
-//Get highres artwork -- taken from Litteeen's Lobelias (https://github.com/Litteeen/Lobelias/)
 %hook SBMediaController
 -(void)setNowPlayingInfo:(id)arg1{
 	%orig;
@@ -512,9 +513,7 @@
 	%orig;
 
 	if([self.label isEqualToString:@"MRPlatter-CoverSheet"] && highresImage) {
-		double delayInSeconds = 0.1;	
-    	dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
-    	dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+		dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.1 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
 			[self.nowPlayingHeaderView.artworkView setImage:highresImage];
 		});
 	} 
@@ -588,7 +587,6 @@
 				[self.placeholderArtworkView setFrame:CGRectMake(self.placeholderArtworkView.frame.origin.x, self.placeholderArtworkView.frame.origin.y, 60, 60)];
 				[self.placeholderArtworkView setCenter:self.artworkBackground.center];
 				[self.shadow setFrame:self.placeholderArtworkView.frame];
-				[self.launchNowPlayingAppButton setFrame:self.artworkView.frame];  
 			}
 		}
 	}
@@ -622,8 +620,7 @@
 
 				[self.primaryLabel setTextColor:[UIColor colorWithWhite:textcolor alpha:0.9]];
 
-				[MSHookIvar<UIView*>(self.routingButton.packageView, "_packageContentView") setBackgroundColor:[UIColor colorWithWhite:textcolor alpha:1]];
-				[MSHookIvar<UIView*>(self.routingButton.packageView, "_packageContentView").layer setCornerRadius:18];
+				[self.routingButton setOverrideUserInterfaceStyle:(textcolor+1)];
 			}
 
 			if(showConnectButton){
@@ -673,13 +670,13 @@
 	MRUNowPlayingViewController *controller = (MRUNowPlayingViewController *)[self _viewControllerForAncestor];
 	if(controller.context == 2){ 
 		if(configuration == 0 || configuration == 1){ //normal
-			CGRect reference = CGRectMake(120, 0, self.superview.frame.size.width-120, frame.size.height-20); //make frame for remaining 2/3 of player (excluding artwork (120x120)) 
+			CGRect reference = CGRectMake(120-(controlSpacing/2), 0, self.superview.frame.size.width-120+controlSpacing, frame.size.height-20); //make frame for remaining 2/3 of player (excluding artwork (120x120)) 
 			%orig(CGRectMake(frame.origin.x, frame.origin.y, reference.size.width*1.25, reference.size.height));  //change size of controls
 			[self setCenter:CGPointMake(CGRectGetMidX(reference), frame.size.height*2)]; //set the center of the controls in the reference rect 
 			[self setClipsToBounds:YES];
 		}
 		else{ //if volume bar is present (meaning controlsview has moved)
-			CGRect reference = CGRectMake(120, 0, self.superview.frame.size.width-120, frame.size.height-20);  
+			CGRect reference = CGRectMake(120-(controlSpacing/2), 0, self.superview.frame.size.width-120+controlSpacing, frame.size.height-20);  
 			%orig(CGRectMake(frame.origin.x, frame.origin.y, reference.size.width*1.25, reference.size.height));  
 			[self setCenter:CGPointMake(CGRectGetMidX(reference), (frame.size.height*2)+16)]; //adjust for controlsview movement (Y: -16)
 			[self setClipsToBounds:YES];
@@ -826,7 +823,6 @@
 %end
 
 
-//Get highres artwork -- taken from Litteeen's Lobelias (https://github.com/Litteeen/Lobelias/)
 %hook SBMediaController
 -(void)setNowPlayingInfo:(id)arg1{
 	%orig;
@@ -847,9 +843,7 @@
 	%orig;
 
 	if(self.context == 2 && highresImage) {
-		double delayInSeconds = 0.1;	
-    	dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
-    	dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+		dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.1 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
 			[self.viewIfLoaded.controlsView.headerView.artworkView setArtworkImage:highresImage];
 		});
 	} 
@@ -951,10 +945,8 @@
 				
 			if(self.labelView.subtitleLabel.layer.filters.count) self.labelView.subtitleLabel.layer.filters = nil;
 			[self.labelView.subtitleLabel setTextColor:[UIColor colorWithWhite:textcolor alpha:0.9]];
-				
 
-			[MSHookIvar<UIView*>(self.routingButton.packageView, "_packageContentView") setBackgroundColor:[UIColor colorWithWhite:textcolor alpha:1]];
-			[MSHookIvar<UIView*>(self.routingButton.packageView, "_packageContentView").layer setCornerRadius:18];
+			[self.routingButton setOverrideUserInterfaceStyle:(textcolor+1)];
 		}
 
 		if(showConnectButton){
@@ -987,6 +979,7 @@ void preferencesChanged(){
 		showConnectButton = ([prefs objectForKey:@"showConnectButton"] ? [[prefs valueForKey:@"showConnectButton"] boolValue] : NO );
 		stndRouteLabel = ([prefs objectForKey:@"stndRouteLabel"] ? [[prefs valueForKey:@"stndRouteLabel"] boolValue] : NO );
 		cornerRadius = ([prefs objectForKey:@"cornerRadius"] ? [[prefs valueForKey:@"cornerRadius"] floatValue] : 13 );
+		controlSpacing = ([prefs objectForKey:@"controlSpacing"] ? [[prefs valueForKey:@"controlSpacing"] floatValue] : 0 );
 		transparencyLevel = ([prefs objectForKey:@"transparencyLevel"] ? [[prefs valueForKey:@"transparencyLevel"] floatValue] : 100 );
 		textcolor = ([prefs objectForKey:@"textcolor"] ? [[prefs valueForKey:@"textcolor"] integerValue] : 0 );
 	}
@@ -999,14 +992,14 @@ void preferencesChanged(){
 
 	if(isEnabled){
 		float version = [[[UIDevice currentDevice] systemVersion] floatValue];
-		if(version >= 12 && version < 13) {
-			%init(Tweak_12);
+		if(version >= 14.2){
+			%init(Tweak_14);
 		} 
-		else if (version >= 13 && version < 14.2) {
+		else if (version >= 13.0) {
 			%init(Tweak_13);
 		}
-		else{
-			%init(Tweak_14);
+		else if(version >= 12.0) {
+			%init(Tweak_12);
 		}
 	}
 }
