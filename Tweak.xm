@@ -991,14 +991,13 @@ void preferencesChanged(){
 	CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, (CFNotificationCallback)preferencesChanged, CFSTR("me.lightmann.vinylprefs-updated"), NULL, CFNotificationSuspensionBehaviorDeliverImmediately);
 
 	if(isEnabled){
-		float version = [[[UIDevice currentDevice] systemVersion] floatValue];
-		if(version >= 14.2){
+		if(SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"14.2")){
 			%init(Tweak_14);
 		} 
-		else if (version >= 13.0) {
+		else if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"13")) {
 			%init(Tweak_13);
 		}
-		else if(version >= 12.0) {
+		else if(SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"12")) {
 			%init(Tweak_12);
 		}
 	}
