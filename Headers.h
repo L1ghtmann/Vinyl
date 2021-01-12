@@ -1,7 +1,7 @@
 #import <UIKit/UIKit.h>
 #import <MediaRemote/MediaRemote.h>
 
-// https://stackoverflow.com/questions/7848766/how-can-we-programmatically-detect-which-ios-version-is-device-running-on
+//https://stackoverflow.com/a/5337804
 #define SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(v)  ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] != NSOrderedAscending)
 
 @interface UIView (Private)

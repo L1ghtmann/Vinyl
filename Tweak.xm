@@ -670,15 +670,15 @@
 	MRUNowPlayingViewController *controller = (MRUNowPlayingViewController *)[self _viewControllerForAncestor];
 	if(controller.context == 2){ 
 		if(configuration == 0 || configuration == 1){ //normal
-			CGRect reference = CGRectMake(120-(controlSpacing/2), 0, self.superview.frame.size.width-120+controlSpacing, frame.size.height-20); //make frame for remaining 2/3 of player (excluding artwork (120x120)) 
+			CGRect reference = CGRectMake(120-(controlSpacing/2), 0, self.superview.frame.size.width-120+controlSpacing, frame.size.height-10); //make frame for remaining 2/3 of player (excluding artwork (120x120)) 
 			%orig(CGRectMake(frame.origin.x, frame.origin.y, reference.size.width*1.25, reference.size.height));  //change size of controls
-			[self setCenter:CGPointMake(CGRectGetMidX(reference), frame.size.height*2)]; //set the center of the controls in the reference rect 
+			[self setCenter:CGPointMake(CGRectGetMidX(reference), (frame.size.height*2)-5)]; //set the center of the controls in the reference rect 
 			[self setClipsToBounds:YES];
 		}
 		else{ //if volume bar is present (meaning controlsview has moved)
-			CGRect reference = CGRectMake(120-(controlSpacing/2), 0, self.superview.frame.size.width-120+controlSpacing, frame.size.height-20);  
+			CGRect reference = CGRectMake(120-(controlSpacing/2), 0, self.superview.frame.size.width-120+controlSpacing, frame.size.height-10);  
 			%orig(CGRectMake(frame.origin.x, frame.origin.y, reference.size.width*1.25, reference.size.height));  
-			[self setCenter:CGPointMake(CGRectGetMidX(reference), (frame.size.height*2)+16)]; //adjust for controlsview movement (Y: -16)
+			[self setCenter:CGPointMake(CGRectGetMidX(reference), (frame.size.height*2)+11)]; //adjust for controlsview movement (Y: +16)
 			[self setClipsToBounds:YES];
 		} 
 	}
@@ -720,7 +720,7 @@
 			%orig(CGRectMake(frame.origin.x+45,104.5,frame.size.width-(self.frame.origin.x*2),frame.size.height/2)); 
 		}
 		else if(configuration == 3){ //if volume bar is present (meaning controlsview has moved)
-			%orig(CGRectMake(frame.origin.x+45,120.5,frame.size.width-(self.frame.origin.x*2),frame.size.height/2)); //adjust for controlsview movement (Y: -16)
+			%orig(CGRectMake(frame.origin.x+45,120.5,frame.size.width-(self.frame.origin.x*2),frame.size.height/2)); //adjust for controlsview movement (Y: +16)
 		}
 	}
 	else{									
@@ -814,7 +814,7 @@
 	MRUNowPlayingViewController *controller = (MRUNowPlayingViewController *)[self _viewControllerForAncestor];
 	if(controller.context == 2 && (configuration == 2 || configuration == 3)){
 		// %orig(CGRectMake(frame.origin.x+45,-(self.frame.origin.x/1.5)+4,frame.size.width-(self.frame.origin.x*2),frame.size.height/2)); //normal 
-		%orig(CGRectMake(frame.origin.x+45,-(self.frame.origin.x/1.5)+20,frame.size.width-(self.frame.origin.x*2),frame.size.height/2)); //adjust for controlsview movement (Y: -16)
+		%orig(CGRectMake(frame.origin.x+45,-(self.frame.origin.x/1.5)+20,frame.size.width-(self.frame.origin.x*2),frame.size.height/2)); //adjust for controlsview movement (Y: +16)
 	}
 	else{
 		%orig;
@@ -860,19 +860,19 @@
 	}
 	else if(controller.context == 2){
 		if(configuration == 0 || configuration == 1){ //normal
-			%orig(CGRectMake(frame.origin.x+17, frame.origin.y-10, frame.size.width, frame.size.height));  
+			%orig(CGRectMake(frame.origin.x+17, frame.origin.y-20, frame.size.width, frame.size.height));  
 
 				//RTL support 
 				if([UIApplication sharedApplication].userInterfaceLayoutDirection == UIUserInterfaceLayoutDirectionRightToLeft){
-					%orig(CGRectMake((self.artworkView.frame.size.width/1.5), frame.origin.y-10, frame.size.width, frame.size.height));  
+					%orig(CGRectMake((self.artworkView.frame.size.width/1.5), frame.origin.y-20, frame.size.width, frame.size.height));  
 				}
 		}
 		else{ //if volume bar is present (meaning controlsview has moved)
-			%orig(CGRectMake(frame.origin.x+17, frame.origin.y+6, frame.size.width, frame.size.height)); //adjust for controlsview movement (Y: -16)
+			%orig(CGRectMake(frame.origin.x+17, frame.origin.y-4, frame.size.width, frame.size.height)); //adjust for controlsview movement (Y: +16)
 
 				//RTL support 
 				if([UIApplication sharedApplication].userInterfaceLayoutDirection == UIUserInterfaceLayoutDirectionRightToLeft){
-					%orig(CGRectMake((self.artworkView.frame.size.width/1.5), frame.origin.y+6, frame.size.width, frame.size.height));  
+					%orig(CGRectMake((self.artworkView.frame.size.width/1.5), frame.origin.y-4, frame.size.width, frame.size.height));  
 				}
 		}
 	}
@@ -890,7 +890,7 @@
 		%orig;
 	}
 	else if(controller.context == 2){
-		[self.artworkView setFrame:CGRectMake(self.artworkView.frame.origin.x-23, self.artworkView.frame.origin.y, 120, 120)]; 
+		[self.artworkView setFrame:CGRectMake(self.artworkView.frame.origin.x-25, self.artworkView.frame.origin.y+10, 120, 120)]; 
 	
 		[self.transportButton setFrame:self.artworkView.frame];
 	
