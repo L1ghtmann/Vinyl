@@ -1,4 +1,4 @@
-#import "Headers.h"
+#import "Tweak.h"
 
 //Lightmann
 //Created during COVID-19
@@ -252,16 +252,15 @@
 			[self.launchNowPlayingAppButton setFrame:self.artworkView.frame];
 
 			if(showConnectButton){
+				CGRect frame = self.routingButton.frame; 
+				CGRect frame2 = self.routeLabel.frame;
+
 				//RTL support 
 				if([UIApplication sharedApplication].userInterfaceLayoutDirection == UIUserInterfaceLayoutDirectionRightToLeft){
-					[self.routingButton setFrame:CGRectMake(self.routeLabel.frame.size.width-2, self.routeLabel.frame.origin.y-12.5, self.routingButton.frame.size.width, self.routingButton.frame.size.height)];
+					[self.routingButton setFrame:CGRectMake(frame2.size.width-2, frame2.origin.y-12.5, frame.size.width, frame.size.height)];
 				}
 				else{
-					//couldn't get constraints to stick on either the routing button or label, so rects it is . . .
-					CGRect frame = self.routingButton.frame; 
-					[self.routingButton setFrame:CGRectMake((self.routeLabel.frame.origin.x-13.5), (self.routeLabel.frame.origin.y-12), frame.size.width, frame.size.height)];
-
-					CGRect frame2 = self.routeLabel.frame;
+					[self.routingButton setFrame:CGRectMake((frame2.origin.x-13.5), (frame2.origin.y-12), frame.size.width, frame.size.height)];
 					[self.routeLabel setFrame:CGRectMake(frame2.origin.x+13.5, frame2.origin.y, frame2.size.width, frame2.size.height)];
 				}
 			}
@@ -566,16 +565,15 @@
 			[self.launchNowPlayingAppButton setFrame:self.artworkView.frame];
 
 			if(showConnectButton){
+				CGRect frame = self.routingButton.frame; 
+				CGRect frame2 = self.routeLabel.frame;
+
 				//RTL support 
 				if([UIApplication sharedApplication].userInterfaceLayoutDirection == UIUserInterfaceLayoutDirectionRightToLeft){
-					[self.routingButton setFrame:CGRectMake(self.routeLabel.frame.size.width-2, self.routeLabel.frame.origin.y-12.5, self.routingButton.frame.size.width, self.routingButton.frame.size.height)];
+					[self.routingButton setFrame:CGRectMake(frame2.size.width-2, frame2.origin.y-12.5, frame.size.width, frame.size.height)];
 				}
 				else{
-					//couldn't get constraints to stick on either the routing button or label, so rects it is . . .
-					CGRect frame = self.routingButton.frame; 
-					[self.routingButton setFrame:CGRectMake((self.routeLabel.frame.origin.x-13.5), (self.routeLabel.frame.origin.y-12), frame.size.width, frame.size.height)];
-
-					CGRect frame2 = self.routeLabel.frame;
+					[self.routingButton setFrame:CGRectMake((frame2.origin.x-13.5), (frame2.origin.y-12), frame.size.width, frame.size.height)];
 					[self.routeLabel setFrame:CGRectMake(frame2.origin.x+13.5, frame2.origin.y, frame2.size.width, frame2.size.height)];
 				}
 			}
@@ -669,18 +667,17 @@
 -(void)setFrame:(CGRect)frame{
 	MRUNowPlayingViewController *controller = (MRUNowPlayingViewController *)[self _viewControllerForAncestor];
 	if(controller.context == 2){ 
+		CGRect reference = CGRectMake(120-(controlSpacing/2), 0, self.superview.frame.size.width-120+controlSpacing, frame.size.height-10);  //make frame for remaining 2/3 of player (excluding artwork (120x120)) 
+		%orig(CGRectMake(frame.origin.x, frame.origin.y, reference.size.width*1.25, reference.size.height));  //change size of controls
+		
 		if(configuration == 0 || configuration == 1){ //normal
-			CGRect reference = CGRectMake(120-(controlSpacing/2), 0, self.superview.frame.size.width-120+controlSpacing, frame.size.height-10); //make frame for remaining 2/3 of player (excluding artwork (120x120)) 
-			%orig(CGRectMake(frame.origin.x, frame.origin.y, reference.size.width*1.25, reference.size.height));  //change size of controls
 			[self setCenter:CGPointMake(CGRectGetMidX(reference), (frame.size.height*2)-5)]; //set the center of the controls in the reference rect 
-			[self setClipsToBounds:YES];
 		}
 		else{ //if volume bar is present (meaning controlsview has moved)
-			CGRect reference = CGRectMake(120-(controlSpacing/2), 0, self.superview.frame.size.width-120+controlSpacing, frame.size.height-10);  
-			%orig(CGRectMake(frame.origin.x, frame.origin.y, reference.size.width*1.25, reference.size.height));  
 			[self setCenter:CGPointMake(CGRectGetMidX(reference), (frame.size.height*2)+11)]; //adjust for controlsview movement (Y: +16)
-			[self setClipsToBounds:YES];
 		} 
+
+		[self setClipsToBounds:YES];
 	}
 	else{
 		%orig;
@@ -897,17 +894,17 @@
 		[self.labelView setFrame:CGRectMake(self.labelView.frame.origin.x,self.labelView.frame.origin.y,self.labelView.frame.size.width+20,self.labelView.frame.size.height)];
 
 		if(showConnectButton){
+			CGRect frame = self.routingButton.frame; 
+			CGRect frame2 = self.labelView.routeLabel.frame;
+			CGRect frame3 = self.labelView.routeLabel.titleLabel.frame;
+
 			//RTL support 
 			if([UIApplication sharedApplication].userInterfaceLayoutDirection == UIUserInterfaceLayoutDirectionRightToLeft){
-				[self.routingButton setFrame:CGRectMake(self.labelView.routeLabel.frame.origin.x+(self.routingButton.frame.size.width/2)-10, self.labelView.routeLabel.frame.origin.y+10.5, self.routingButton.frame.size.width, self.routingButton.frame.size.height)];
+				[self.routingButton setFrame:CGRectMake(frame2.origin.x+(frame.size.width/2)-8, frame3.size.height-3.5, frame.size.width, frame.size.height)];
 			}
 			else{
-				//couldn't get constraints to stick on either the routing button or label, so rects it is . . .
-				CGRect frame = self.routingButton.frame; 
-				[self.routingButton setFrame:CGRectMake((self.labelView.routeLabel.frame.size.width*2.5), self.labelView.routeLabel.frame.origin.y+10.5, frame.size.width, frame.size.height)];
-
-				CGRect frame2 = self.labelView.routeLabel.frame;
-				[self.labelView.routeLabel.titleLabel setFrame:CGRectMake(frame2.origin.x+13.5, frame2.origin.y, frame2.size.width, frame2.size.height)];
+				[self.routingButton setFrame:CGRectMake((self.labelView.frame.origin.x-13.5), frame3.size.height-3.5, frame.size.width, frame.size.height)];
+				[self.labelView.routeLabel.titleLabel setFrame:CGRectMake(frame2.origin.x+11.5, frame2.origin.y, frame2.size.width, frame2.size.height)];
 			}
 		}
 
@@ -932,7 +929,7 @@
 		[self.artworkView.layer setCornerRadius:cornerRadius-8];
 		[self.artworkView setClipsToBounds:YES];
 		
-		[self.routingButton.packageView setScale:.325];
+		[self.routingButton.packageView setScale:.455];
 
 		if(textcolor < 2){
 			if(self.labelView.routeLabel.layer.filters.count) self.labelView.routeLabel.layer.filters = nil;
@@ -973,16 +970,15 @@
 //	PREFERENCES 
 void preferencesChanged(){
 	NSDictionary *prefs = [[NSUserDefaults standardUserDefaults] persistentDomainForName:@"me.lightmann.vinylprefs"];
-	if(prefs){
-		isEnabled = ([prefs objectForKey:@"isEnabled"] ? [[prefs valueForKey:@"isEnabled"] boolValue] : YES );
-		configuration = ([prefs objectForKey:@"configuration"] ? [[prefs valueForKey:@"configuration"] integerValue] : 0 );
-		showConnectButton = ([prefs objectForKey:@"showConnectButton"] ? [[prefs valueForKey:@"showConnectButton"] boolValue] : NO );
-		stndRouteLabel = ([prefs objectForKey:@"stndRouteLabel"] ? [[prefs valueForKey:@"stndRouteLabel"] boolValue] : NO );
-		cornerRadius = ([prefs objectForKey:@"cornerRadius"] ? [[prefs valueForKey:@"cornerRadius"] floatValue] : 13 );
-		controlSpacing = ([prefs objectForKey:@"controlSpacing"] ? [[prefs valueForKey:@"controlSpacing"] floatValue] : 0 );
-		transparencyLevel = ([prefs objectForKey:@"transparencyLevel"] ? [[prefs valueForKey:@"transparencyLevel"] floatValue] : 100 );
-		textcolor = ([prefs objectForKey:@"textcolor"] ? [[prefs valueForKey:@"textcolor"] integerValue] : 0 );
-	}
+
+	isEnabled = (prefs && [prefs objectForKey:@"isEnabled"] ? [[prefs valueForKey:@"isEnabled"] boolValue] : YES );
+	configuration = (prefs && [prefs objectForKey:@"configuration"] ? [[prefs valueForKey:@"configuration"] integerValue] : 0 );
+	showConnectButton = (prefs && [prefs objectForKey:@"showConnectButton"] ? [[prefs valueForKey:@"showConnectButton"] boolValue] : NO );
+	stndRouteLabel = (prefs && [prefs objectForKey:@"stndRouteLabel"] ? [[prefs valueForKey:@"stndRouteLabel"] boolValue] : NO );
+	cornerRadius = (prefs && [prefs objectForKey:@"cornerRadius"] ? [[prefs valueForKey:@"cornerRadius"] floatValue] : 13 );
+	controlSpacing = (prefs && [prefs objectForKey:@"controlSpacing"] ? [[prefs valueForKey:@"controlSpacing"] floatValue] : 0 );
+	transparencyLevel = (prefs && [prefs objectForKey:@"transparencyLevel"] ? [[prefs valueForKey:@"transparencyLevel"] floatValue] : 100 );
+	textcolor = (prefs && [prefs objectForKey:@"textcolor"] ? [[prefs valueForKey:@"textcolor"] integerValue] : 0 );
 }
 
 %ctor{
