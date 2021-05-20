@@ -25,7 +25,7 @@
 		}
 	}
 			
-	// Use constraints so it's dynamic and works with listview (parent container)
+	// Using constraints so it's dynamic and works with listview (parent container)
 	[self.heightAnchor constraintEqualToConstant:playerHeight].active = true;
 }
 %end
@@ -85,7 +85,7 @@
 // positioning 
 -(void)setFrame:(CGRect)frame{
 	MRPlatterViewController *controller = (MRPlatterViewController *)[self _viewControllerForAncestor];
-	if([controller.delegate isKindOfClass:%c(SBDashBoardMediaControlsViewController)] && (configuration == 1 || configuration == 3)){
+	if([controller.delegate isKindOfClass:%c(SBDashBoardMediaControlsViewController)]){
 		%orig(CGRectMake(63, 25, (self.superview.frame.size.width-126), 54));
 		// since it's centered and we're flipping it, nothing needs to be done for RTL
 	}
@@ -99,7 +99,7 @@
 	%orig;
 
 	MRPlatterViewController *controller = (MRPlatterViewController *)[self _viewControllerForAncestor];
-	if([controller.delegate isKindOfClass:%c(SBDashBoardMediaControlsViewController)] && (configuration == 1 || configuration == 3)){
+	if([controller.delegate isKindOfClass:%c(SBDashBoardMediaControlsViewController)]){
 		[self.knobView setHidden:YES];
 		[self.elapsedTimeLabel setHidden:YES];
 		[self.remainingTimeLabel setHidden:YES];
@@ -111,7 +111,7 @@
 	%orig;
 
 	MRPlatterViewController *controller = (MRPlatterViewController *)[self _viewControllerForAncestor];
-	if([controller.delegate isKindOfClass:%c(SBDashBoardMediaControlsViewController)] && (configuration == 1 || configuration == 3) && textcolor < 2){
+	if([controller.delegate isKindOfClass:%c(SBDashBoardMediaControlsViewController)] && textcolor < 2){
 		[self.elapsedTrack setBackgroundColor:[UIColor colorWithWhite:textcolor alpha:1]];      
 	}
 }
@@ -171,7 +171,7 @@
 
 			self.volumeSlider.minimumValueImage = nil;
 			self.volumeSlider.maximumValueImage = nil;
-			[self.volumeSlider.thumbView setHidden:YES];// knob
+			[self.volumeSlider.thumbView setHidden:YES]; // knob
 
 			if(textcolor < 2){
 				[self.volumeSlider setMinimumTrackTintColor:[UIColor colorWithWhite:textcolor alpha:1]];
@@ -182,7 +182,7 @@
 %end
 
 
-// Get highres artwork -- taken from Litten's Lobelias (https:// github.com/Litteeen/Lobelias/)
+// get highres artwork -- taken from Litten's Lobelias (https://github.com/schneelittchen/Lobelias)
 %hook SBMediaController
 -(void)setNowPlayingInfo:(id)arg1{
 	%orig;
@@ -203,9 +203,7 @@
 	%orig;
 
 	if([self.label isEqualToString:@"MRPlatter-CoverSheet"] && highresImage) {
-		dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.1 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
-			[self.nowPlayingHeaderView.artworkView setImage:highresImage];
-		});
+		[self.nowPlayingHeaderView.artworkView setImage:highresImage];
 	} 
 }
 %end
@@ -314,19 +312,8 @@
 				[MSHookIvar<CALayer*>(self.routingButton.packageView, "_packageLayer") setCornerRadius:18];
 			}
 
-			if(showConnectButton){
-				[self.routingButton setHidden:NO];
-			}
-			else{
-				[self.routingButton setHidden:YES];
-			}
-
-			if(stndRouteLabel){
-				[self.routeLabel setForcesUppercaseText:NO];
-			}
-			else{
-				[self.routeLabel setForcesUppercaseText:YES];
-			}
+			[self.routingButton setHidden:!showConnectButton];
+			[self.routeLabel setForcesUppercaseText:!stndRouteLabel];
 		}
 	}
 }
@@ -348,7 +335,7 @@
 	[platterView.backgroundView setAlpha:transparencyLevel/100];
 	[platterView.backgroundView.layer setCornerRadius:cornerRadius];
 			
-	// Use constraints so it's dynamic and works with listview (parent container)
+	// Using constraints so it's dynamic and works with listview (parent container)
 	[self.heightAnchor constraintEqualToConstant:playerHeight].active = true;
 }
 %end
@@ -408,7 +395,7 @@
 // positioning
 -(void)setFrame:(CGRect)frame{
 	MRPlatterViewController *controller = (MRPlatterViewController *)[self _viewControllerForAncestor];
-	if([controller.delegate isKindOfClass:%c(CSMediaControlsViewController)] && (configuration == 1 || configuration == 3)){
+	if([controller.delegate isKindOfClass:%c(CSMediaControlsViewController)]){
 		%orig(CGRectMake(63, 25, (self.superview.frame.size.width-126), 54));
 		// since it's centered and we're flipping it, nothing needs to be done for RTL
 	}
@@ -422,7 +409,7 @@
 	%orig;
 
 	MRPlatterViewController *controller = (MRPlatterViewController *)[self _viewControllerForAncestor];
-	if([controller.delegate isKindOfClass:%c(CSMediaControlsViewController)] && (configuration == 1 || configuration == 3)){
+	if([controller.delegate isKindOfClass:%c(CSMediaControlsViewController)]){
 		[self.knobView setHidden:YES];
 		[self.elapsedTimeLabel setHidden:YES];
 		[self.remainingTimeLabel setHidden:YES];
@@ -434,7 +421,7 @@
 	%orig;
 
 	MRPlatterViewController *controller = (MRPlatterViewController *)[self _viewControllerForAncestor];
-	if([controller.delegate isKindOfClass:%c(CSMediaControlsViewController)] && (configuration == 1 || configuration == 3) && textcolor < 2){
+	if([controller.delegate isKindOfClass:%c(CSMediaControlsViewController)] && textcolor < 2){
 		[self.elapsedTrack setBackgroundColor:[UIColor colorWithWhite:textcolor alpha:1]];      
 	}
 }
@@ -476,15 +463,15 @@
 		else{
 			[self setHidden:NO];
 
+			[self setTranslatesAutoresizingMaskIntoConstraints:NO];
 			[self.heightAnchor constraintEqualToConstant:64].active = true;
 			[self.widthAnchor constraintEqualToConstant:(self.superview.frame.size.width-104)].active = true;
-			[self.topAnchor constraintEqualToAnchor:self.superview.topAnchor constant:-(self.frame.origin.x/2)-5.5].active = true; 	
 			[self.leftAnchor constraintEqualToAnchor:self.superview.leftAnchor constant:52].active = true; 
-			[self setTranslatesAutoresizingMaskIntoConstraints:NO];
+			[self.topAnchor constraintEqualToAnchor:self.superview.topAnchor constant:-(self.frame.origin.x/2)-5.5].active = true; 	
 
 			self.volumeSlider.minimumValueImage = nil;
 			self.volumeSlider.maximumValueImage = nil;
-			[self.volumeSlider.thumbView setHidden:YES];// knob
+			[self.volumeSlider.thumbView setHidden:YES]; // knob
 
 			if(textcolor < 2){
 				[self.volumeSlider setMinimumTrackTintColor:[UIColor colorWithWhite:textcolor alpha:1]];
@@ -515,9 +502,7 @@
 	%orig;
 
 	if([self.label isEqualToString:@"MRPlatter-CoverSheet"] && highresImage) {
-		dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.1 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
-			[self.nowPlayingHeaderView.artworkView setImage:highresImage];
-		});
+		[self.nowPlayingHeaderView.artworkView setImage:highresImage];
 	} 
 }
 %end
@@ -624,19 +609,8 @@
 				[self.routingButton setOverrideUserInterfaceStyle:(textcolor+1)];
 			}
 
-			if(showConnectButton){
-				[self.routingButton setHidden:NO];
-			}
-			else{
-				[self.routingButton setHidden:YES];
-			}
-
-			if(stndRouteLabel){
-				[self.routeLabel setForcesUppercaseText:NO];
-			}
-			else{
-				[self.routeLabel setForcesUppercaseText:YES];
-			}
+			[self.routingButton setHidden:!showConnectButton];
+			[self.routeLabel setForcesUppercaseText:!stndRouteLabel];
 		}
 	}
 }
@@ -734,7 +708,7 @@
 	%orig;
 
 	MRUNowPlayingViewController *controller = (MRUNowPlayingViewController *)[self _viewControllerForAncestor];
-	if(controller.context == 2 && (configuration == 1 || configuration == 3)){
+	if(controller.context == 2){
 		[self.knobView setHidden:YES];
 		[self.elapsedTimeLabel setHidden:YES];
 		[self.remainingTimeLabel setHidden:YES];
@@ -893,8 +867,8 @@
 %end
 
 
-// positioning 
 %hook MRUNowPlayingLabelView
+// positioning
 -(void)setFrame:(CGRect)frame{
 	MRUNowPlayingViewController *controller = (MRUNowPlayingViewController *)[self _viewControllerForAncestor];
 	if(![controller respondsToSelector:@selector(context)]){
@@ -921,8 +895,8 @@
 %end
 
 
-// positioning 
 %hook MPRouteLabel
+// positioning
 -(void)setFrame:(CGRect)frame{
 	MRUNowPlayingViewController *controller = (MRUNowPlayingViewController *)[self _viewControllerForAncestor];
 	if(![controller respondsToSelector:@selector(context)]){
@@ -947,8 +921,8 @@
 %end
 
 
-// positioning 
 %hook MRUNowPlayingRoutingButton
+// positioning
 -(void)setFrame:(CGRect)frame{
 	MRUNowPlayingViewController *controller = (MRUNowPlayingViewController *)[self _viewControllerForAncestor];
 	if(![controller respondsToSelector:@selector(context)]){
