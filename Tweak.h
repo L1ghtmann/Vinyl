@@ -1,7 +1,7 @@
 #import <UIKit/UIKit.h>
 #import <MediaRemote/MediaRemote.h>
 
-//https://stackoverflow.com/a/5337804
+// https:// stackoverflow.com/a/5337804
 #define SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(v)  ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] != NSOrderedAscending)
 
 @interface UIView (Private)
@@ -16,12 +16,12 @@
 @property (nonatomic,retain) MTMaterialView * backgroundView; 
 @end
 
-@interface SBDashBoardAdjunctItemView : UIView{ //player iOS 12
+@interface SBDashBoardAdjunctItemView : UIView{ // player iOS 12
 	UIView* _platterView;
 }
 @end
 
-@interface CSAdjunctItemView : UIView{ //player iOS 13 & 14
+@interface CSAdjunctItemView : UIView{ // player iOS 13 & 14
 	UIView* _platterView;
 }
 @end
@@ -98,7 +98,7 @@
 @end
 
 @interface CCUICAPackageView : UIView
-@property (assign,nonatomic) double scale; //only avaialble on iOS 13 
+@property (assign,nonatomic) double scale; // only avaialble on iOS 13 
 @end
 
 @interface MediaControlsRoutingButtonView : UIButton // iOS 12 & 13
@@ -127,14 +127,14 @@
 
 @interface MRUArtworkView : UIView 
 @property (nonatomic, retain) UIImage *iconImage;
-@property (nonatomic, retain) UIImage *plceholderImage;
-@property (nonatomic, retain) UIImage *artworkImage;
-@property (nonatomic, retain) UIImageView *iconView; 
+@property (nonatomic,retain) UIImageView * iconView; // src icon 
 @property (nonatomic, retain) UIView *iconShadowView;
+@property (nonatomic, retain) UIImage *placeholderImage;
+@property (nonatomic,retain) UIImageView * placeholderImageView;  
+@property (nonatomic, retain) UIView *placeholderBackground; 
+@property (nonatomic, retain) UIImage *artworkImage;
 @property (nonatomic, retain) UIImageView *artworkImageView;
 @property (nonatomic, retain) UIView *artworkShadowView;
-@property (nonatomic, retain) UIImageView *placeholderImageView; 
-@property (nonatomic, retain) UIView *placeholderBackground; 
 @end
 
 @interface MediaControlsHeaderView : UIView{ // iOS 12 & 13
@@ -179,20 +179,22 @@
 @end
 
 @interface MRUNowPlayingViewController : UIViewController // iOS 14
-@property (assign,nonatomic) id delegate;  //LS has no delegate, but CC does
-@property (nonatomic,readonly) int context; //2 on LS || 1 on CC
+@property (assign,nonatomic) id delegate;  // LS has no delegate, but CC does
+@property (nonatomic,readonly) int context; // 2 on LS || 1 on CC
 @property (nonatomic, retain) MRUNowPlayingView *viewIfLoaded; // middle-man view
 @end
 
-//local
+// local
 UIImage *highresImage;
 
-//prefs
+// prefs
 static BOOL isEnabled;
 
 static int configuration;
 static BOOL showConnectButton;
 static BOOL stndRouteLabel;
+static BOOL hideSrcIcon;
+
 static CGFloat cornerRadius;
 
 static CGFloat controlSpacing;
