@@ -24,7 +24,7 @@
 			}
 		}
 	}
-			
+
 	// Using constraints so it's dynamic and works with listview (parent container)
 	[self.heightAnchor constraintEqualToConstant:playerHeight].active = true;
 }
@@ -33,21 +33,21 @@
 
 // controls
 %hook MediaControlsTransportStackView
-// positioning											
--(void)setFrame:(CGRect)frame{						
+// positioning
+-(void)setFrame:(CGRect)frame{
 	MRPlatterViewController *controller = (MRPlatterViewController *)[self _viewControllerForAncestor];
 	if([controller.delegate isKindOfClass:%c(SBDashBoardMediaControlsViewController)]){
-		CGRect reference = CGRectMake(artworkSize-(controlSpacing/2), 0, self.superview.frame.size.width-artworkSize+controlSpacing, frame.size.height-20); // make frame for remaining 2/3 of player (excluding artwork (artworkSizexartworkSize)) 
+		CGRect reference = CGRectMake(artworkSize-(controlSpacing/2), 0, self.superview.frame.size.width-artworkSize+controlSpacing, frame.size.height-20); // make frame for remaining 2/3 of player (excluding artwork (artworkSizexartworkSize))
 		%orig(CGRectMake(frame.origin.x, frame.origin.y, reference.size.width*1.25, reference.size.height));  // change size of controls
-		[self setCenter:CGPointMake(CGRectGetMidX(reference), self.frame.size.height/2)]; // set the center of the controls in the reference rect 
-		[self setClipsToBounds:YES]; 
+		[self setCenter:CGPointMake(CGRectGetMidX(reference), self.frame.size.height/2)]; // set the center of the controls in the reference rect
+		[self setClipsToBounds:YES];
 	}
 	else{
 		%orig;
 	}
 }
 
-// coloring 
+// coloring
 -(void)_updateButtonBlendMode:(id)arg1 {
 	%orig;
 
@@ -60,14 +60,14 @@
 		[self.middleButton setTintColor:[UIColor colorWithWhite:textcolor alpha:1]];
 
 		if(self.rightButton.layer.filters.count) self.rightButton.layer.filters = nil;
-		[self.rightButton setTintColor:[UIColor colorWithWhite:textcolor alpha:1]];			
+		[self.rightButton setTintColor:[UIColor colorWithWhite:textcolor alpha:1]];
 	}
 }
 %end
 
 
-// prevent control stack from clipping										
-%hook MediaControlsParentContainerView 
+// prevent control stack from clipping
+%hook MediaControlsParentContainerView
 -(void)setFrame:(CGRect)frame{
 	MRPlatterViewController *controller = (MRPlatterViewController *)[self _viewControllerForAncestor];
 	if([controller.delegate isKindOfClass:%c(SBDashBoardMediaControlsViewController)]){
@@ -82,7 +82,7 @@
 
 // progress bar
 %hook MediaControlsTimeControl
-// positioning 
+// positioning
 -(void)setFrame:(CGRect)frame{
 	MRPlatterViewController *controller = (MRPlatterViewController *)[self _viewControllerForAncestor];
 	if([controller.delegate isKindOfClass:%c(SBDashBoardMediaControlsViewController)]){
@@ -95,7 +95,7 @@
 }
 
 // hide knob and duration labels
--(void)_updateTimeControl{	
+-(void)_updateTimeControl{
 	%orig;
 
 	MRPlatterViewController *controller = (MRPlatterViewController *)[self _viewControllerForAncestor];
@@ -112,7 +112,7 @@
 
 	MRPlatterViewController *controller = (MRPlatterViewController *)[self _viewControllerForAncestor];
 	if([controller.delegate isKindOfClass:%c(SBDashBoardMediaControlsViewController)] && textcolor < 2){
-		[self.elapsedTrack setBackgroundColor:[UIColor colorWithWhite:textcolor alpha:1]];      
+		[self.elapsedTrack setBackgroundColor:[UIColor colorWithWhite:textcolor alpha:1]];
 	}
 }
 
@@ -128,7 +128,7 @@
 		else{
 			[self setHidden:NO];
 
-			// RTL support 
+			// RTL support
 			if([UIApplication sharedApplication].userInterfaceLayoutDirection == UIUserInterfaceLayoutDirectionRightToLeft){
 				// rotate 180 degrees about the origin (to make it start on the right side)
 				self.transform = CGAffineTransformRotate(self.transform, M_PI);
@@ -147,7 +147,7 @@
 	if([controller.delegate isKindOfClass:%c(SBDashBoardMediaControlsViewController)]){
 		%orig(CGRectMake(frame.origin.x+36, frame.origin.y-225, (self.superview.frame.size.width-(self.frame.origin.x*2)),frame.size.height));
 
-		// RTL support 
+		// RTL support
 		if([UIApplication sharedApplication].userInterfaceLayoutDirection == UIUserInterfaceLayoutDirectionRightToLeft){
 			%orig(CGRectMake(frame.origin.x+30, frame.origin.y-225, (self.superview.frame.size.width-(self.frame.origin.x*2)+6),frame.size.height));
 		}
@@ -204,13 +204,13 @@
 
 	if([self.label isEqualToString:@"MRPlatter-CoverSheet"] && highresImage) {
 		[self.nowPlayingHeaderView.artworkView setImage:highresImage];
-	} 
+	}
 }
 %end
 
 
 %hook MediaControlsHeaderView
-// positioning 
+// positioning
 -(void)setFrame:(CGRect)frame{
 	MRPlatterViewController *controller = (MRPlatterViewController *)[self _viewControllerForAncestor];
 	if(![controller respondsToSelector:@selector(delegate)]){
@@ -218,11 +218,11 @@
 	}
 	else{
 		if([controller.delegate isKindOfClass:%c(SBDashBoardMediaControlsViewController)]){
-			%orig(CGRectMake(frame.origin.x+(self.artworkView.frame.size.width/2.5), frame.origin.y-10, frame.size.width, frame.size.height));  
+			%orig(CGRectMake(frame.origin.x+(self.artworkView.frame.size.width/2.5), frame.origin.y-10, frame.size.width, frame.size.height));
 
-				// RTL support 
+				// RTL support
 				if([UIApplication sharedApplication].userInterfaceLayoutDirection == UIUserInterfaceLayoutDirectionRightToLeft){
-					%orig(CGRectMake((self.artworkView.frame.size.width/2)-frame.origin.x, frame.origin.y-10, frame.size.width, frame.size.height));  
+					%orig(CGRectMake((self.artworkView.frame.size.width/2)-frame.origin.x, frame.origin.y-10, frame.size.width, frame.size.height));
 				}
 		}
 		else{
@@ -231,7 +231,7 @@
 	}
 }
 
-// artwork positioning stuff 
+// artwork positioning stuff
 -(void)layoutSubviews{
 	%orig;
 
@@ -240,23 +240,23 @@
 		%orig;
 	}
 	else{
-		if([controller.delegate isKindOfClass:%c(SBDashBoardMediaControlsViewController)]){	
-			[self.artworkView setFrame:CGRectMake(self.artworkView.frame.origin.x-64, self.artworkView.frame.origin.y-8, artworkSize, artworkSize)]; 
+		if([controller.delegate isKindOfClass:%c(SBDashBoardMediaControlsViewController)]){
+			[self.artworkView setFrame:CGRectMake(self.artworkView.frame.origin.x-64, self.artworkView.frame.origin.y-8, artworkSize, artworkSize)];
 
-			[self.artworkBackground setFrame:self.artworkView.frame]; 
+			[self.artworkBackground setFrame:self.artworkView.frame];
 
 			[self.placeholderArtworkView setFrame:CGRectMake(self.placeholderArtworkView.frame.origin.x, self.placeholderArtworkView.frame.origin.y, 60, 60)];
-			[self.placeholderArtworkView setCenter:self.artworkBackground.center]; 
-	
-			[self.shadow setFrame:self.placeholderArtworkView.frame]; 
-			
+			[self.placeholderArtworkView setCenter:self.artworkBackground.center];
+
+			[self.shadow setFrame:self.placeholderArtworkView.frame];
+
 			[self.launchNowPlayingAppButton setFrame:self.artworkView.frame];
 
 			if(showConnectButton){
-				CGRect frame = self.routingButton.frame; 
+				CGRect frame = self.routingButton.frame;
 				CGRect frame2 = self.routeLabel.frame;
 
-				// RTL support 
+				// RTL support
 				if([UIApplication sharedApplication].userInterfaceLayoutDirection == UIUserInterfaceLayoutDirectionRightToLeft){
 					[self.routingButton setFrame:CGRectMake(frame2.size.width-2, frame2.origin.y-12.5, frame.size.width, frame.size.height)];
 				}
@@ -266,7 +266,7 @@
 				}
 			}
 
-			// RTL support 
+			// RTL support
 			if([UIApplication sharedApplication].userInterfaceLayoutDirection == UIUserInterfaceLayoutDirectionRightToLeft){
 				[self.artworkView setFrame:CGRectMake((-self.superview.frame.size.width)+self.artworkView.frame.origin.x+68, self.artworkView.frame.origin.y, artworkSize, artworkSize)];
 				[self.artworkBackground setFrame:self.artworkView.frame];
@@ -294,7 +294,7 @@
 			[self.artworkBackground.layer setCornerRadius:cornerRadius-8];
 			[self.placeholderArtworkView.layer setCornerRadius:cornerRadius-8];
 
-			// No scale property, so have to manually transform the CALayer 
+			// No scale property, so have to manually transform the CALayer
 			self.routingButton.packageView.layer.transform = CATransform3DMakeScale(.325, .325, 1);
 
 			if(textcolor < 2){
@@ -334,7 +334,7 @@
 	PLPlatterView *platterView = (PLPlatterView*)MSHookIvar<UIView*>(self, "_platterView");
 	[platterView.backgroundView setAlpha:transparencyLevel/100];
 	[platterView.backgroundView.layer setCornerRadius:cornerRadius];
-			
+
 	// Using constraints so it's dynamic and works with listview (parent container)
 	[self.heightAnchor constraintEqualToConstant:playerHeight].active = true;
 }
@@ -343,22 +343,22 @@
 
 // controls
 %hook MediaControlsTransportStackView
-// positioning											
+// positioning
 -(void)setFrame:(CGRect)frame{
 	MRPlatterViewController *controller = (MRPlatterViewController *)[self _viewControllerForAncestor];
 	if([controller.delegate isKindOfClass:%c(CSMediaControlsViewController)]){
-		CGRect reference = CGRectMake(artworkSize-(controlSpacing/2), 0, self.superview.frame.size.width-artworkSize+controlSpacing, frame.size.height-20); // make frame for remaining 2/3 of player (excluding artwork (artworkSizexartworkSize)) 
+		CGRect reference = CGRectMake(artworkSize-(controlSpacing/2), 0, self.superview.frame.size.width-artworkSize+controlSpacing, frame.size.height-20); // make frame for remaining 2/3 of player (excluding artwork (artworkSizexartworkSize))
 		%orig(CGRectMake(frame.origin.x, frame.origin.y, reference.size.width*1.25, reference.size.height));  // change size of controls
-		[self setCenter:CGPointMake(CGRectGetMidX(reference), self.frame.size.height/2)]; // set the center of the controls in the reference rect 
-		[self setClipsToBounds:YES]; 
+		[self setCenter:CGPointMake(CGRectGetMidX(reference), self.frame.size.height/2)]; // set the center of the controls in the reference rect
+		[self setClipsToBounds:YES];
 	}
 	else{
 		%orig;
 	}
 }
 
-// coloring 
--(void)_updateVisualStylingForButtons{	
+// coloring
+-(void)_updateVisualStylingForButtons{
 	%orig;
 
 	MRPlatterViewController *controller = (MRPlatterViewController *)[self _viewControllerForAncestor];
@@ -370,14 +370,14 @@
 		[self.middleButton.imageView setTintColor:[UIColor colorWithWhite:textcolor alpha:1]];
 
 		if(self.rightButton.imageView.layer.filters.count) self.rightButton.imageView.layer.filters = nil;
-		[self.rightButton.imageView setTintColor:[UIColor colorWithWhite:textcolor alpha:1]];		
+		[self.rightButton.imageView setTintColor:[UIColor colorWithWhite:textcolor alpha:1]];
 	}
 }
 %end
 
 
-// prevent control stack from clipping										
-%hook MediaControlsParentContainerView 
+// prevent control stack from clipping
+%hook MediaControlsParentContainerView
 -(void)setFrame:(CGRect)frame{
 	MRPlatterViewController *controller = (MRPlatterViewController *)[self _viewControllerForAncestor];
 	if([controller.delegate isKindOfClass:%c(CSMediaControlsViewController)]){
@@ -405,7 +405,7 @@
 }
 
 // hide knob and duration labels
--(void)updateSliderConstraint{	
+-(void)updateSliderConstraint{
 	%orig;
 
 	MRPlatterViewController *controller = (MRPlatterViewController *)[self _viewControllerForAncestor];
@@ -422,7 +422,7 @@
 
 	MRPlatterViewController *controller = (MRPlatterViewController *)[self _viewControllerForAncestor];
 	if([controller.delegate isKindOfClass:%c(CSMediaControlsViewController)] && textcolor < 2){
-		[self.elapsedTrack setBackgroundColor:[UIColor colorWithWhite:textcolor alpha:1]];      
+		[self.elapsedTrack setBackgroundColor:[UIColor colorWithWhite:textcolor alpha:1]];
 	}
 }
 
@@ -438,7 +438,7 @@
 		else{
 			[self setHidden:NO];
 
-			// RTL support 
+			// RTL support
 			if([UIApplication sharedApplication].userInterfaceLayoutDirection == UIUserInterfaceLayoutDirectionRightToLeft){
 				// rotate 180 degrees about the origin (to make it start on the right side)
 				self.transform = CGAffineTransformRotate(self.transform, M_PI);
@@ -466,8 +466,8 @@
 			[self setTranslatesAutoresizingMaskIntoConstraints:NO];
 			[self.heightAnchor constraintEqualToConstant:64].active = true;
 			[self.widthAnchor constraintEqualToConstant:(self.superview.frame.size.width-104)].active = true;
-			[self.leftAnchor constraintEqualToAnchor:self.superview.leftAnchor constant:52].active = true; 
-			[self.topAnchor constraintEqualToAnchor:self.superview.topAnchor constant:-(self.frame.origin.x/2)-5.5].active = true; 	
+			[self.leftAnchor constraintEqualToAnchor:self.superview.leftAnchor constant:52].active = true;
+			[self.topAnchor constraintEqualToAnchor:self.superview.topAnchor constant:-(self.frame.origin.x/2)-5.5].active = true;
 
 			self.volumeSlider.minimumValueImage = nil;
 			self.volumeSlider.maximumValueImage = nil;
@@ -503,13 +503,13 @@
 
 	if([self.label isEqualToString:@"MRPlatter-CoverSheet"] && highresImage) {
 		[self.nowPlayingHeaderView.artworkView setImage:highresImage];
-	} 
+	}
 }
 %end
 
 
 %hook MediaControlsHeaderView
-// positioning 
+// positioning
 -(void)setFrame:(CGRect)frame{
 	MRPlatterViewController *controller = (MRPlatterViewController *)[self _viewControllerForAncestor];
 	if(![controller respondsToSelector:@selector(delegate)]){
@@ -517,11 +517,11 @@
 	}
 	else{
 		if([controller.delegate isKindOfClass:%c(CSMediaControlsViewController)]){
-			%orig(CGRectMake(frame.origin.x+(self.artworkView.frame.size.width/2.5), frame.origin.y-10, frame.size.width, frame.size.height));  
+			%orig(CGRectMake(frame.origin.x+(self.artworkView.frame.size.width/2.5), frame.origin.y-10, frame.size.width, frame.size.height));
 
-				// RTL support 
+				// RTL support
 				if([UIApplication sharedApplication].userInterfaceLayoutDirection == UIUserInterfaceLayoutDirectionRightToLeft){
-					%orig(CGRectMake((self.artworkView.frame.size.width/2)-frame.origin.x, frame.origin.y-10, frame.size.width, frame.size.height));  
+					%orig(CGRectMake((self.artworkView.frame.size.width/2)-frame.origin.x, frame.origin.y-10, frame.size.width, frame.size.height));
 				}
 		}
 		else{
@@ -530,7 +530,7 @@
 	}
 }
 
-// artwork positioning stuff 
+// artwork positioning stuff
 -(void)layoutSubviews{
 	%orig;
 
@@ -539,24 +539,24 @@
 		%orig;
 	}
 	else{
-		if([controller.delegate isKindOfClass:%c(CSMediaControlsViewController)]){	
-			// for some reason using constraints here instead of rects works on iOS 13.4+, but not on versions <13.4. Rects it is then . . . 
-			[self.artworkView setFrame:CGRectMake(self.artworkView.frame.origin.x-64, self.artworkView.frame.origin.y-8, artworkSize, artworkSize)]; 
+		if([controller.delegate isKindOfClass:%c(CSMediaControlsViewController)]){
+			// for some reason using constraints here instead of rects works on iOS 13.4+, but not on versions <13.4. Rects it is then . . .
+			[self.artworkView setFrame:CGRectMake(self.artworkView.frame.origin.x-64, self.artworkView.frame.origin.y-8, artworkSize, artworkSize)];
 
-			[self.artworkBackground setFrame:self.artworkView.frame]; 
+			[self.artworkBackground setFrame:self.artworkView.frame];
 
 			[self.placeholderArtworkView setFrame:CGRectMake(self.placeholderArtworkView.frame.origin.x, self.placeholderArtworkView.frame.origin.y, 60, 60)];
-			[self.placeholderArtworkView setCenter:self.artworkBackground.center]; 
-	
-			[self.shadow setFrame:self.placeholderArtworkView.frame]; 
-			
+			[self.placeholderArtworkView setCenter:self.artworkBackground.center];
+
+			[self.shadow setFrame:self.placeholderArtworkView.frame];
+
 			[self.launchNowPlayingAppButton setFrame:self.artworkView.frame];
 
 			if(showConnectButton){
-				CGRect frame = self.routingButton.frame; 
+				CGRect frame = self.routingButton.frame;
 				CGRect frame2 = self.routeLabel.frame;
 
-				// RTL support 
+				// RTL support
 				if([UIApplication sharedApplication].userInterfaceLayoutDirection == UIUserInterfaceLayoutDirectionRightToLeft){
 					[self.routingButton setFrame:CGRectMake(frame2.size.width-2, frame2.origin.y-12.5, frame.size.width, frame.size.height)];
 				}
@@ -566,7 +566,7 @@
 				}
 			}
 
-			// RTL support 
+			// RTL support
 			if([UIApplication sharedApplication].userInterfaceLayoutDirection == UIUserInterfaceLayoutDirectionRightToLeft){
 				[self.artworkView setFrame:CGRectMake(-(self.superview.frame.size.width), self.artworkView.frame.origin.y, artworkSize, artworkSize)];
 				[self.artworkBackground setFrame:self.artworkView.frame];
@@ -592,7 +592,7 @@
 			[self.artworkView.layer setCornerRadius:cornerRadius-8];
 			[self.artworkBackground.layer setCornerRadius:cornerRadius-8];
 			[self.placeholderArtworkView.layer setCornerRadius:cornerRadius-8];
-			
+
 			[self.routingButton.packageView setScale:.325];
 
 			if(textcolor < 2){
@@ -631,7 +631,7 @@
 	PLPlatterView *platterView = (PLPlatterView*)MSHookIvar<UIView*>(self, "_platterView");
 	[platterView.backgroundView setAlpha:transparencyLevel/100];
 	[platterView.backgroundView.layer setCornerRadius:cornerRadius];
-			
+
 	// Using constraints so it's dynamic and works with listview (parent container)
 	[self.heightAnchor constraintEqualToConstant:playerHeight].active = true;
 }
@@ -640,10 +640,10 @@
 
 // controls
 %hook MRUNowPlayingTransportControlsView
-// positioning						
+// positioning
 -(void)setFrame:(CGRect)frame{
 	MRUNowPlayingViewController *controller = (MRUNowPlayingViewController *)[self _viewControllerForAncestor];
-	if(controller.context == 2){ 
+	if(controller.context == 2){
 		CGFloat height = frame.size.height-10;
 		CGFloat width = (artworkSize*2)+controlSpacing+height;
 
@@ -660,8 +660,8 @@
 	}
 }
 
-// coloring 
--(void)didMoveToWindow{	
+// coloring
+-(void)didMoveToWindow{
 	%orig;
 
 	MRUNowPlayingViewController *controller = (MRUNowPlayingViewController *)[self _viewControllerForAncestor];
@@ -685,7 +685,7 @@
 
 // progress bar
 %hook MRUNowPlayingTimeControlsView
-// positioning 
+// positioning
 -(void)setFrame:(CGRect)frame{
 	MRUNowPlayingViewController *controller = (MRUNowPlayingViewController *)[self _viewControllerForAncestor];
 	if(controller.context == 2){
@@ -698,7 +698,7 @@
 		[self.centerXAnchor constraintEqualToAnchor:self.superview.centerXAnchor].active = YES;
 		[self.bottomAnchor constraintEqualToAnchor:self.superview.topAnchor constant:(playerHeight+(height/2.25))].active = YES;
 	}
-	else{									
+	else{
 		%orig;
 	}
 }
@@ -714,7 +714,7 @@
 		[self.remainingTimeLabel setHidden:YES];
 
 		if(textcolor < 2){
-			[self.elapsedTrack setBackgroundColor:[UIColor colorWithWhite:textcolor alpha:1]];      
+			[self.elapsedTrack setBackgroundColor:[UIColor colorWithWhite:textcolor alpha:1]];
 		}
 	}
 }
@@ -724,14 +724,14 @@
 	%orig;
 
 	MRUNowPlayingViewController *controller = (MRUNowPlayingViewController *)[self _viewControllerForAncestor];
-	if(controller.context == 2){ 
+	if(controller.context == 2){
 		if(configuration == 0 || configuration == 2){
 			[self setHidden:YES];
 		}
 		else{
 			[self setHidden:NO];
 
-			// RTL support 
+			// RTL support
 			if([UIApplication sharedApplication].userInterfaceLayoutDirection == UIUserInterfaceLayoutDirectionRightToLeft){
 				// rotate 180 degrees about the origin (i.e., start on the right side)
 				self.transform = CGAffineTransformRotate(self.transform, M_PI);
@@ -742,9 +742,9 @@
 %end
 
 
-// this view acts as a touch reciever for all controls 
+// this view acts as a touch reciever for all controls
 // we need to adjust its bounds to include the volume bar so touch input is properly registered
-%hook MRUNowPlayingControlsView 
+%hook MRUNowPlayingControlsView
 -(void)setFrame:(CGRect)frame{
 	MRUNowPlayingViewController *controller = (MRUNowPlayingViewController *)[self _viewControllerForAncestor];
 	if(controller.context == 2){
@@ -752,7 +752,7 @@
 		[self.widthAnchor constraintEqualToConstant:frame.size.width].active = YES;
 		[self.heightAnchor constraintEqualToConstant:frame.size.height].active = YES;
 		[self.centerXAnchor constraintEqualToAnchor:self.superview.centerXAnchor].active = YES;
-		[self.topAnchor constraintEqualToAnchor:self.superview.topAnchor].active = YES; 
+		[self.topAnchor constraintEqualToAnchor:self.superview.topAnchor].active = YES;
 	}
 	else{
 		%orig;
@@ -763,12 +763,12 @@
 
 // volume bar
 %hook MRUNowPlayingVolumeControlsView
-// positioning 
+// positioning
 -(void)setFrame:(CGRect)frame{
 	MRUNowPlayingViewController *controller = (MRUNowPlayingViewController *)[self _viewControllerForAncestor];
 	if(controller.context == 2){
 		CGFloat width = frame.size.width-((frame.origin.x+45)*2);
-		CGFloat height = frame.size.height/2; 
+		CGFloat height = frame.size.height/2;
 
 		[self setTranslatesAutoresizingMaskIntoConstraints:NO];
 		[self.widthAnchor constraintEqualToConstant:width].active = YES;
@@ -806,41 +806,27 @@
 }
 %end
 
-
-%hook SBMediaController
--(void)setNowPlayingInfo:(id)arg1{
-	%orig;
-
-	MRMediaRemoteGetNowPlayingInfo(dispatch_get_main_queue(), ^(CFDictionaryRef information){
-        if (information){
-        	NSDictionary* dict = (__bridge NSDictionary *)information;
-        	highresImage = [UIImage imageWithData:[dict objectForKey:(__bridge NSString*)kMRMediaRemoteNowPlayingInfoArtworkData]];
-		}
-    });
-}
-%end
-
-
-// add higher res artwork image to now-enlarged imageview
-%hook MRUNowPlayingViewController
--(void)updateLayout{
-	%orig;
-
-	if(self.context == 2 && highresImage) {
-		[self.viewIfLoaded.controlsView.headerView.artworkView setArtworkImage:highresImage];
-	} 
-}
-%end
-
-
 %hook MRUArtworkView
-// positioning 
--(void)setFrame:(CGRect)frame{
-	MRUNowPlayingViewController *controller = (MRUNowPlayingViewController *)[self _viewControllerForAncestor];
-	if(![controller respondsToSelector:@selector(context)]){
+-(void)setArtworkImage:(UIImage *)arg1 {
+	MRUNowPlayingViewController *controller = (MRUNowPlayingViewController *) self.nextResponder.nextResponder.nextResponder.nextResponder;
+	if([controller respondsToSelector:@selector(context)] && controller.context == 2){
+		MRMediaRemoteGetNowPlayingInfo(dispatch_get_main_queue(), ^(CFDictionaryRef information){
+			if (information){
+				NSDictionary* dict = (__bridge NSDictionary *)information;
+				UIImage *highresImage = [UIImage imageWithData:[dict objectForKey:(__bridge NSString*)kMRMediaRemoteNowPlayingInfoArtworkData]];
+				%orig(highresImage);
+			} else {
+				%orig;
+			}
+		});
+	} else {
 		%orig;
 	}
-	else if(controller.context == 2){
+}
+// positioning
+-(void)setFrame:(CGRect)frame{
+	MRUNowPlayingViewController *controller = (MRUNowPlayingViewController *)[self _viewControllerForAncestor];
+	if([controller respondsToSelector:@selector(context)] && controller.context == 2){
 		[self setTranslatesAutoresizingMaskIntoConstraints:NO];
 		[self.widthAnchor constraintEqualToConstant:artworkSize].active = YES;
 		[self.heightAnchor constraintEqualToConstant:artworkSize].active = YES;
@@ -854,15 +840,14 @@
 
 // why is the src icon such a pain to remove/hide?!
 -(void)setIconImage:(UIImage *)arg1 {
-	%orig;
+	if(!hideSrcIcon){
+		%orig;
+		return;
+	}
 
 	MRUNowPlayingViewController *controller = (MRUNowPlayingViewController *)[self _viewControllerForAncestor];
-	if(![controller respondsToSelector:@selector(context)]){
-		%orig;
-	}
-	else if(controller.context == 2){
-		if(hideSrcIcon) %orig(nil);
-	}
+	BOOL hide = ([controller respondsToSelector:@selector(context)] && controller.context == 2);
+	%orig(hide ? nil : arg1);
 }
 %end
 
@@ -871,16 +856,13 @@
 // positioning
 -(void)setFrame:(CGRect)frame{
 	MRUNowPlayingViewController *controller = (MRUNowPlayingViewController *)[self _viewControllerForAncestor];
-	if(![controller respondsToSelector:@selector(context)]){
-		%orig;
-	} 
-	else if(controller.context == 2){
+	if([controller respondsToSelector:@selector(context)] && controller.context == 2){
 		[self setTranslatesAutoresizingMaskIntoConstraints:NO];
 		[self.widthAnchor constraintEqualToConstant:self.superview.frame.size.width-artworkSize-5].active = YES;
 		[self.heightAnchor constraintEqualToConstant:frame.size.height+20].active = YES;
 		[self.centerYAnchor constraintEqualToAnchor:self.superview.centerYAnchor constant:-5].active = YES;
 
-		// RTL support 
+		// RTL support
 		if([UIApplication sharedApplication].userInterfaceLayoutDirection == UIUserInterfaceLayoutDirectionRightToLeft){
 			[self.leftAnchor constraintEqualToAnchor:self.superview.leftAnchor constant:artworkSize-5].active = YES;
 		}
@@ -899,14 +881,11 @@
 // positioning
 -(void)setFrame:(CGRect)frame{
 	MRUNowPlayingViewController *controller = (MRUNowPlayingViewController *)[self _viewControllerForAncestor];
-	if(![controller respondsToSelector:@selector(context)]){
-		%orig;
-	} 
-	else if(controller.context == 2 && showConnectButton){
+	if([controller respondsToSelector:@selector(context)] && controller.context == 2 && showConnectButton){
 		[self setTranslatesAutoresizingMaskIntoConstraints:NO];
 		[self.topAnchor constraintEqualToAnchor:self.superview.topAnchor].active = YES;
 
-		// RTL support 
+		// RTL support
 		if([UIApplication sharedApplication].userInterfaceLayoutDirection == UIUserInterfaceLayoutDirectionRightToLeft){
 			[self.rightAnchor constraintEqualToAnchor:self.superview.rightAnchor].active = YES;
 		}
@@ -925,14 +904,11 @@
 // positioning
 -(void)setFrame:(CGRect)frame{
 	MRUNowPlayingViewController *controller = (MRUNowPlayingViewController *)[self _viewControllerForAncestor];
-	if(![controller respondsToSelector:@selector(context)]){
-		%orig;
-	} 
-	else if(controller.context == 2 && showConnectButton){
+	if([controller respondsToSelector:@selector(context)] && controller.context == 2 && showConnectButton){
 		[self setTranslatesAutoresizingMaskIntoConstraints:NO];
 		[self.topAnchor constraintEqualToAnchor:self.superview.topAnchor constant:(frame.size.height/4)-1.5].active = YES;
 
-		// RTL support 
+		// RTL support
 		if([UIApplication sharedApplication].userInterfaceLayoutDirection == UIUserInterfaceLayoutDirectionRightToLeft){
 			MRUNowPlayingHeaderView *superview = (MRUNowPlayingHeaderView *)self.superview; // janky, I know
 			[self.rightAnchor constraintEqualToAnchor:self.superview.rightAnchor constant:-superview.labelView.routeLabel.frame.size.width-1.5].active = YES;
@@ -954,14 +930,11 @@
 	%orig;
 
 	MRUNowPlayingViewController *controller = (MRUNowPlayingViewController *)[self _viewControllerForAncestor];
-	if(![controller respondsToSelector:@selector(context)]){
-		%orig;
-	}
-	else if(controller.context == 2){
+	if([controller respondsToSelector:@selector(context)] && controller.context == 2){
 		// 13 is default for player and 5 is default for artwork, so we need to cover the difference
 		[self.artworkView.layer setCornerRadius:cornerRadius-8];
 		[self.artworkView setClipsToBounds:YES];
-		
+
 		[self.routingButton.packageView setScale:.455];
 
 		if(textcolor < 2){
@@ -972,7 +945,7 @@
 
 			if(self.labelView.titleLabel.layer.filters.count) self.labelView.titleLabel.layer.filters = nil;
 			[self.labelView.titleLabel setTextColor:[UIColor colorWithWhite:textcolor alpha:0.9]];
-				
+
 			if(self.labelView.subtitleLabel.layer.filters.count) self.labelView.subtitleLabel.layer.filters = nil;
 			[self.labelView.subtitleLabel setTextColor:[UIColor colorWithWhite:textcolor alpha:0.9]];
 
@@ -983,14 +956,12 @@
 
 // more hiding and styling stuff
 -(void)setShowRoutingButton:(BOOL)arg1 {
-	%orig;
-
 	MRUNowPlayingViewController *controller = (MRUNowPlayingViewController *)[self _viewControllerForAncestor];
-	if(![controller respondsToSelector:@selector(context)]){
-		%orig;
-	}
-	else if(controller.context == 2){
+	if([controller respondsToSelector:@selector(context)] && controller.context == 2){
 		%orig(showConnectButton);
+	}
+	else {
+		%orig;
 	}
 }
 
@@ -998,10 +969,7 @@
 	%orig;
 
 	MRUNowPlayingViewController *controller = (MRUNowPlayingViewController *)[self _viewControllerForAncestor];
-	if(![controller respondsToSelector:@selector(context)]){
-		%orig;
-	}
-	else if(controller.context == 2){
+	if([controller respondsToSelector:@selector(context)] && controller.context == 2){
 		[self.labelView.routeLabel setForcesUppercaseText:!stndRouteLabel];
 	}
 }
@@ -1011,7 +979,7 @@
 
 %end
 
-// PREFERENCES 
+// PREFERENCES
 void preferencesChanged(){
 	NSDictionary *prefs = [[NSUserDefaults standardUserDefaults] persistentDomainForName:@"me.lightmann.vinylprefs"];
 	isEnabled = (prefs && [prefs objectForKey:@"isEnabled"] ? [[prefs valueForKey:@"isEnabled"] boolValue] : YES );
@@ -1028,12 +996,12 @@ void preferencesChanged(){
 %ctor{
 	preferencesChanged();
 
-	CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, (CFNotificationCallback)preferencesChanged, CFSTR("me.lightmann.vinylprefs-updated"), NULL, CFNotificationSuspensionBehaviorDeliverImmediately);
-
 	if(isEnabled){
+		CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, (CFNotificationCallback)preferencesChanged, CFSTR("me.lightmann.vinylprefs-updated"), NULL, CFNotificationSuspensionBehaviorDeliverImmediately);
+
 		if(SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"14.2")){
 			%init(Tweak_14);
-		} 
+		}
 		else if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"13")) {
 			%init(Tweak_13);
 		}
