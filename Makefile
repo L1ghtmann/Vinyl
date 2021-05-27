@@ -1,5 +1,5 @@
 DEBUG=0
-ARCHS = arm64 arm64e
+export ARCHS = arm64 arm64e
 
 INSTALL_TARGET_PROCESSES = SpringBoard
 
