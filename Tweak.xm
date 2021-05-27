@@ -10,20 +10,21 @@
 #pragma mark iOS12
 
 %group Tweak_12
-// transparency, corner radius of media player, and new player height
+// transparency, corner radius, and new player height
 %hook SBDashBoardAdjunctItemView
 -(void)_updateSizeToMimic{
 	%orig;
 
-	PLPlatterView *platterView = (PLPlatterView*)MSHookIvar<UIView*>(self, "_platterView");
-	for(UIView *view in platterView.subviews){
-		if([view isMemberOfClass:%c(MTMaterialView)]){
-			for(UIView *subview in view.subviews){
-				[subview setAlpha:transparencyLevel/100];
-				[subview.layer setCornerRadius:cornerRadius];
-			}
-		}
-	}
+	PLPlatterView *platterView = MSHookIvar<PLPlatterView *>(self, "_platterView");
+
+	[platterView.mainOverlayView setAlpha:transparencyLevel/100];
+	[platterView.backgroundMaterialView setAlpha:transparencyLevel/100];
+	[platterView.backgroundView setAlpha:transparencyLevel/100];
+
+	[platterView.mainOverlayView.layer setMasksToBounds:YES];
+	[platterView.mainOverlayView.layer setCornerRadius:cornerRadius];
+	[platterView.backgroundMaterialView.layer setCornerRadius:cornerRadius];
+	[platterView.backgroundView.layer setCornerRadius:cornerRadius];
 
 	// Using constraints so it's dynamic and works with listview (parent container)
 	[self.heightAnchor constraintEqualToConstant:playerHeight].active = true;
@@ -213,21 +214,16 @@
 // positioning
 -(void)setFrame:(CGRect)frame{
 	MRPlatterViewController *controller = (MRPlatterViewController *)[self _viewControllerForAncestor];
-	if(![controller respondsToSelector:@selector(delegate)]){
-		%orig;
+	if([controller respondsToSelector:@selector(delegate)] && [controller.delegate isKindOfClass:%c(SBDashBoardMediaControlsViewController)]){
+		%orig(CGRectMake(frame.origin.x+(self.artworkView.frame.size.width/2.5), frame.origin.y-10, frame.size.width, frame.size.height));
+
+			// RTL support
+			if([UIApplication sharedApplication].userInterfaceLayoutDirection == UIUserInterfaceLayoutDirectionRightToLeft){
+				%orig(CGRectMake((self.artworkView.frame.size.width/2)-frame.origin.x, frame.origin.y-10, frame.size.width, frame.size.height));
+			}
 	}
 	else{
-		if([controller.delegate isKindOfClass:%c(SBDashBoardMediaControlsViewController)]){
-			%orig(CGRectMake(frame.origin.x+(self.artworkView.frame.size.width/2.5), frame.origin.y-10, frame.size.width, frame.size.height));
-
-				// RTL support
-				if([UIApplication sharedApplication].userInterfaceLayoutDirection == UIUserInterfaceLayoutDirectionRightToLeft){
-					%orig(CGRectMake((self.artworkView.frame.size.width/2)-frame.origin.x, frame.origin.y-10, frame.size.width, frame.size.height));
-				}
-		}
-		else{
-			%orig;
-		}
+		%orig;
 	}
 }
 
@@ -236,45 +232,40 @@
 	%orig;
 
 	MRPlatterViewController *controller = (MRPlatterViewController *)[self _viewControllerForAncestor];
-	if(![controller respondsToSelector:@selector(delegate)]){
-		%orig;
-	}
-	else{
-		if([controller.delegate isKindOfClass:%c(SBDashBoardMediaControlsViewController)]){
-			[self.artworkView setFrame:CGRectMake(self.artworkView.frame.origin.x-64, self.artworkView.frame.origin.y-8, artworkSize, artworkSize)];
+	if([controller respondsToSelector:@selector(delegate)] && [controller.delegate isKindOfClass:%c(SBDashBoardMediaControlsViewController)]){
+		[self.artworkView setFrame:CGRectMake(self.artworkView.frame.origin.x-64, self.artworkView.frame.origin.y-8, artworkSize, artworkSize)];
 
-			[self.artworkBackground setFrame:self.artworkView.frame];
+		[self.artworkBackground setFrame:self.artworkView.frame];
 
-			[self.placeholderArtworkView setFrame:CGRectMake(self.placeholderArtworkView.frame.origin.x, self.placeholderArtworkView.frame.origin.y, 60, 60)];
-			[self.placeholderArtworkView setCenter:self.artworkBackground.center];
+		[self.placeholderArtworkView setFrame:CGRectMake(self.placeholderArtworkView.frame.origin.x, self.placeholderArtworkView.frame.origin.y, 60, 60)];
+		[self.placeholderArtworkView setCenter:self.artworkBackground.center];
 
-			[self.shadow setFrame:self.placeholderArtworkView.frame];
+		[self.shadow setFrame:self.placeholderArtworkView.frame];
 
-			[self.launchNowPlayingAppButton setFrame:self.artworkView.frame];
+		[self.launchNowPlayingAppButton setFrame:self.artworkView.frame];
 
-			if(showConnectButton){
-				CGRect frame = self.routingButton.frame;
-				CGRect frame2 = self.routeLabel.frame;
-
-				// RTL support
-				if([UIApplication sharedApplication].userInterfaceLayoutDirection == UIUserInterfaceLayoutDirectionRightToLeft){
-					[self.routingButton setFrame:CGRectMake(frame2.size.width-2, frame2.origin.y-12.5, frame.size.width, frame.size.height)];
-				}
-				else{
-					[self.routingButton setFrame:CGRectMake((frame2.origin.x-13.5), (frame2.origin.y-12), frame.size.width, frame.size.height)];
-					[self.routeLabel setFrame:CGRectMake(frame2.origin.x+13.5, frame2.origin.y, frame2.size.width, frame2.size.height)];
-				}
-			}
+		if(showConnectButton){
+			CGRect frame = self.routingButton.frame;
+			CGRect frame2 = self.routeLabel.frame;
 
 			// RTL support
 			if([UIApplication sharedApplication].userInterfaceLayoutDirection == UIUserInterfaceLayoutDirectionRightToLeft){
-				[self.artworkView setFrame:CGRectMake((-self.superview.frame.size.width)+self.artworkView.frame.origin.x+68, self.artworkView.frame.origin.y, artworkSize, artworkSize)];
-				[self.artworkBackground setFrame:self.artworkView.frame];
-				[self.placeholderArtworkView setFrame:CGRectMake(self.placeholderArtworkView.frame.origin.x, self.placeholderArtworkView.frame.origin.y, 60, 60)];
-				[self.placeholderArtworkView setCenter:self.artworkBackground.center];
-				[self.shadow setFrame:self.placeholderArtworkView.frame];
-				[self.launchNowPlayingAppButton setFrame:self.artworkView.frame];
+				[self.routingButton setFrame:CGRectMake(frame2.size.width-2, frame2.origin.y-12.5, frame.size.width, frame.size.height)];
 			}
+			else{
+				[self.routingButton setFrame:CGRectMake((frame2.origin.x-13.5), (frame2.origin.y-12), frame.size.width, frame.size.height)];
+				[self.routeLabel setFrame:CGRectMake(frame2.origin.x+13.5, frame2.origin.y, frame2.size.width, frame2.size.height)];
+			}
+		}
+
+		// RTL support
+		if([UIApplication sharedApplication].userInterfaceLayoutDirection == UIUserInterfaceLayoutDirectionRightToLeft){
+			[self.artworkView setFrame:CGRectMake((-self.superview.frame.size.width)+self.artworkView.frame.origin.x+68, self.artworkView.frame.origin.y, artworkSize, artworkSize)];
+			[self.artworkBackground setFrame:self.artworkView.frame];
+			[self.placeholderArtworkView setFrame:CGRectMake(self.placeholderArtworkView.frame.origin.x, self.placeholderArtworkView.frame.origin.y, 60, 60)];
+			[self.placeholderArtworkView setCenter:self.artworkBackground.center];
+			[self.shadow setFrame:self.placeholderArtworkView.frame];
+			[self.launchNowPlayingAppButton setFrame:self.artworkView.frame];
 		}
 	}
 }
@@ -284,37 +275,32 @@
 	%orig;
 
 	MRPlatterViewController *controller = (MRPlatterViewController *)[self _viewControllerForAncestor];
-	if(![controller respondsToSelector:@selector(delegate)]){
-		%orig;
-	}
-	else{
-		if([controller.delegate isKindOfClass:%c(SBDashBoardMediaControlsViewController)]){
-			// 13 is default for player and 5 is default for artwork, so we need to cover the difference
-			[self.artworkView.layer setCornerRadius:cornerRadius-8];
-			[self.artworkBackground.layer setCornerRadius:cornerRadius-8];
-			[self.placeholderArtworkView.layer setCornerRadius:cornerRadius-8];
+	if([controller respondsToSelector:@selector(delegate)] && [controller.delegate isKindOfClass:%c(SBDashBoardMediaControlsViewController)]){
+		// 13 is default for player and 5 is default for artwork, so we need to cover the difference
+		[self.artworkView.layer setCornerRadius:cornerRadius-8];
+		[self.artworkBackground.layer setCornerRadius:cornerRadius-8];
+		[self.placeholderArtworkView.layer setCornerRadius:cornerRadius-8];
 
-			// No scale property, so have to manually transform the CALayer
-			self.routingButton.packageView.layer.transform = CATransform3DMakeScale(.325, .325, 1);
+		// No scale property, so have to manually transform the CALayer
+		self.routingButton.packageView.layer.transform = CATransform3DMakeScale(.325, .325, 1);
 
-			if(textcolor < 2){
-				if(self.routeLabel.layer.filters.count) self.routeLabel.layer.filters = nil;
-				if(self.routeLabel.titleLabel.layer.filters.count) self.routeLabel.titleLabel.layer.filters = nil;
-				[self.routeLabel setTextColor:[UIColor colorWithWhite:textcolor alpha:0.9]];
-				[self.routeLabel.titleLabel setTextColor:[UIColor colorWithWhite:textcolor alpha:0.9]];
+		if(textcolor < 2){
+			if(self.routeLabel.layer.filters.count) self.routeLabel.layer.filters = nil;
+			if(self.routeLabel.titleLabel.layer.filters.count) self.routeLabel.titleLabel.layer.filters = nil;
+			[self.routeLabel setTextColor:[UIColor colorWithWhite:textcolor alpha:0.9]];
+			[self.routeLabel.titleLabel setTextColor:[UIColor colorWithWhite:textcolor alpha:0.9]];
 
-				if(MSHookIvar<UILabel*>(self, "_secondaryLabel").layer.filters.count) MSHookIvar<UILabel*>(self, "_secondaryLabel").layer.filters = nil;
-				[MSHookIvar<UILabel*>(self, "_secondaryLabel") setTextColor:[UIColor colorWithWhite:textcolor alpha:0.9]];
+			if(MSHookIvar<UILabel*>(self, "_secondaryLabel").layer.filters.count) MSHookIvar<UILabel*>(self, "_secondaryLabel").layer.filters = nil;
+			[MSHookIvar<UILabel*>(self, "_secondaryLabel") setTextColor:[UIColor colorWithWhite:textcolor alpha:0.9]];
 
-				[self.primaryLabel setTextColor:[UIColor colorWithWhite:textcolor alpha:0.9]];
+			[self.primaryLabel setTextColor:[UIColor colorWithWhite:textcolor alpha:0.9]];
 
-				[MSHookIvar<CALayer*>(self.routingButton.packageView, "_packageLayer") setBackgroundColor:[UIColor colorWithWhite:textcolor alpha:1].CGColor];
-				[MSHookIvar<CALayer*>(self.routingButton.packageView, "_packageLayer") setCornerRadius:18];
-			}
-
-			[self.routingButton setHidden:!showConnectButton];
-			[self.routeLabel setForcesUppercaseText:!stndRouteLabel];
+			[MSHookIvar<CALayer*>(self.routingButton.packageView, "_packageLayer") setBackgroundColor:[UIColor colorWithWhite:textcolor alpha:1].CGColor];
+			[MSHookIvar<CALayer*>(self.routingButton.packageView, "_packageLayer") setCornerRadius:18];
 		}
+
+		[self.routingButton setHidden:!showConnectButton];
+		[self.routeLabel setForcesUppercaseText:!stndRouteLabel];
 	}
 }
 %end
@@ -326,12 +312,12 @@
 #pragma mark iOS13
 
 %group Tweak_13
-// transparency, corner radius of media player, and new player height
+// transparency, corner radius, and new player height
 %hook CSAdjunctItemView
 -(void)_updateSizeToMimic{
 	%orig;
 
-	PLPlatterView *platterView = (PLPlatterView*)MSHookIvar<UIView*>(self, "_platterView");
+	PLPlatterView *platterView = MSHookIvar<PLPlatterView *>(self, "_platterView");
 	[platterView.backgroundView setAlpha:transparencyLevel/100];
 	[platterView.backgroundView.layer setCornerRadius:cornerRadius];
 
@@ -512,21 +498,16 @@
 // positioning
 -(void)setFrame:(CGRect)frame{
 	MRPlatterViewController *controller = (MRPlatterViewController *)[self _viewControllerForAncestor];
-	if(![controller respondsToSelector:@selector(delegate)]){
-		%orig;
+	if([controller respondsToSelector:@selector(delegate)] && [controller.delegate isKindOfClass:%c(CSMediaControlsViewController)]){
+		%orig(CGRectMake(frame.origin.x+(self.artworkView.frame.size.width/2.5), frame.origin.y-10, frame.size.width, frame.size.height));
+
+			// RTL support
+			if([UIApplication sharedApplication].userInterfaceLayoutDirection == UIUserInterfaceLayoutDirectionRightToLeft){
+				%orig(CGRectMake((self.artworkView.frame.size.width/2)-frame.origin.x, frame.origin.y-10, frame.size.width, frame.size.height));
+			}
 	}
 	else{
-		if([controller.delegate isKindOfClass:%c(CSMediaControlsViewController)]){
-			%orig(CGRectMake(frame.origin.x+(self.artworkView.frame.size.width/2.5), frame.origin.y-10, frame.size.width, frame.size.height));
-
-				// RTL support
-				if([UIApplication sharedApplication].userInterfaceLayoutDirection == UIUserInterfaceLayoutDirectionRightToLeft){
-					%orig(CGRectMake((self.artworkView.frame.size.width/2)-frame.origin.x, frame.origin.y-10, frame.size.width, frame.size.height));
-				}
-		}
-		else{
-			%orig;
-		}
+		%orig;
 	}
 }
 
@@ -535,45 +516,40 @@
 	%orig;
 
 	MRPlatterViewController *controller = (MRPlatterViewController *)[self _viewControllerForAncestor];
-	if(![controller respondsToSelector:@selector(delegate)]){
-		%orig;
-	}
-	else{
-		if([controller.delegate isKindOfClass:%c(CSMediaControlsViewController)]){
-			// for some reason using constraints here instead of rects works on iOS 13.4+, but not on versions <13.4. Rects it is then . . .
-			[self.artworkView setFrame:CGRectMake(self.artworkView.frame.origin.x-64, self.artworkView.frame.origin.y-8, artworkSize, artworkSize)];
+	if([controller respondsToSelector:@selector(delegate)] && [controller.delegate isKindOfClass:%c(CSMediaControlsViewController)]){
+		// for some reason using constraints here instead of rects works on iOS 13.4+, but not on versions <13.4. Rects it is then . . .
+		[self.artworkView setFrame:CGRectMake(self.artworkView.frame.origin.x-64, self.artworkView.frame.origin.y-8, artworkSize, artworkSize)];
 
-			[self.artworkBackground setFrame:self.artworkView.frame];
+		[self.artworkBackground setFrame:self.artworkView.frame];
 
-			[self.placeholderArtworkView setFrame:CGRectMake(self.placeholderArtworkView.frame.origin.x, self.placeholderArtworkView.frame.origin.y, 60, 60)];
-			[self.placeholderArtworkView setCenter:self.artworkBackground.center];
+		[self.placeholderArtworkView setFrame:CGRectMake(self.placeholderArtworkView.frame.origin.x, self.placeholderArtworkView.frame.origin.y, 60, 60)];
+		[self.placeholderArtworkView setCenter:self.artworkBackground.center];
 
-			[self.shadow setFrame:self.placeholderArtworkView.frame];
+		[self.shadow setFrame:self.placeholderArtworkView.frame];
 
-			[self.launchNowPlayingAppButton setFrame:self.artworkView.frame];
+		[self.launchNowPlayingAppButton setFrame:self.artworkView.frame];
 
-			if(showConnectButton){
-				CGRect frame = self.routingButton.frame;
-				CGRect frame2 = self.routeLabel.frame;
-
-				// RTL support
-				if([UIApplication sharedApplication].userInterfaceLayoutDirection == UIUserInterfaceLayoutDirectionRightToLeft){
-					[self.routingButton setFrame:CGRectMake(frame2.size.width-2, frame2.origin.y-12.5, frame.size.width, frame.size.height)];
-				}
-				else{
-					[self.routingButton setFrame:CGRectMake((frame2.origin.x-13.5), (frame2.origin.y-12), frame.size.width, frame.size.height)];
-					[self.routeLabel setFrame:CGRectMake(frame2.origin.x+13.5, frame2.origin.y, frame2.size.width, frame2.size.height)];
-				}
-			}
+		if(showConnectButton){
+			CGRect frame = self.routingButton.frame;
+			CGRect frame2 = self.routeLabel.frame;
 
 			// RTL support
 			if([UIApplication sharedApplication].userInterfaceLayoutDirection == UIUserInterfaceLayoutDirectionRightToLeft){
-				[self.artworkView setFrame:CGRectMake(-(self.superview.frame.size.width), self.artworkView.frame.origin.y, artworkSize, artworkSize)];
-				[self.artworkBackground setFrame:self.artworkView.frame];
-				[self.placeholderArtworkView setFrame:CGRectMake(self.placeholderArtworkView.frame.origin.x, self.placeholderArtworkView.frame.origin.y, 60, 60)];
-				[self.placeholderArtworkView setCenter:self.artworkBackground.center];
-				[self.shadow setFrame:self.placeholderArtworkView.frame];
+				[self.routingButton setFrame:CGRectMake(frame2.size.width-2, frame2.origin.y-12.5, frame.size.width, frame.size.height)];
 			}
+			else{
+				[self.routingButton setFrame:CGRectMake((frame2.origin.x-13.5), (frame2.origin.y-12), frame.size.width, frame.size.height)];
+				[self.routeLabel setFrame:CGRectMake(frame2.origin.x+13.5, frame2.origin.y, frame2.size.width, frame2.size.height)];
+			}
+		}
+
+		// RTL support
+		if([UIApplication sharedApplication].userInterfaceLayoutDirection == UIUserInterfaceLayoutDirectionRightToLeft){
+			[self.artworkView setFrame:CGRectMake(-(self.superview.frame.size.width), self.artworkView.frame.origin.y, artworkSize, artworkSize)];
+			[self.artworkBackground setFrame:self.artworkView.frame];
+			[self.placeholderArtworkView setFrame:CGRectMake(self.placeholderArtworkView.frame.origin.x, self.placeholderArtworkView.frame.origin.y, 60, 60)];
+			[self.placeholderArtworkView setCenter:self.artworkBackground.center];
+			[self.shadow setFrame:self.placeholderArtworkView.frame];
 		}
 	}
 }
@@ -583,35 +559,30 @@
 	%orig;
 
 	MRPlatterViewController *controller = (MRPlatterViewController *)[self _viewControllerForAncestor];
-	if(![controller respondsToSelector:@selector(delegate)]){
-		%orig;
-	}
-	else{
-		if([controller.delegate isKindOfClass:%c(CSMediaControlsViewController)]){
-			// 13 is default for player and 5 is default for artwork, so we need to cover the difference
-			[self.artworkView.layer setCornerRadius:cornerRadius-8];
-			[self.artworkBackground.layer setCornerRadius:cornerRadius-8];
-			[self.placeholderArtworkView.layer setCornerRadius:cornerRadius-8];
+	if([controller respondsToSelector:@selector(delegate)] && [controller.delegate isKindOfClass:%c(CSMediaControlsViewController)]){
+		// 13 is default for player and 5 is default for artwork, so we need to cover the difference
+		[self.artworkView.layer setCornerRadius:cornerRadius-8];
+		[self.artworkBackground.layer setCornerRadius:cornerRadius-8];
+		[self.placeholderArtworkView.layer setCornerRadius:cornerRadius-8];
 
-			[self.routingButton.packageView setScale:.325];
+		[self.routingButton.packageView setScale:.325];
 
-			if(textcolor < 2){
-				if(self.routeLabel.layer.filters.count) self.routeLabel.layer.filters = nil;
-				if(self.routeLabel.titleLabel.layer.filters.count) self.routeLabel.titleLabel.layer.filters = nil;
-				[self.routeLabel setTextColor:[UIColor colorWithWhite:textcolor alpha:0.9]];
-				[self.routeLabel.titleLabel setTextColor:[UIColor colorWithWhite:textcolor alpha:0.9]];
+		if(textcolor < 2){
+			if(self.routeLabel.layer.filters.count) self.routeLabel.layer.filters = nil;
+			if(self.routeLabel.titleLabel.layer.filters.count) self.routeLabel.titleLabel.layer.filters = nil;
+			[self.routeLabel setTextColor:[UIColor colorWithWhite:textcolor alpha:0.9]];
+			[self.routeLabel.titleLabel setTextColor:[UIColor colorWithWhite:textcolor alpha:0.9]];
 
-				if(MSHookIvar<UILabel*>(self, "_secondaryLabel").layer.filters.count) MSHookIvar<UILabel*>(self, "_secondaryLabel").layer.filters = nil;
-				[MSHookIvar<UILabel*>(self, "_secondaryLabel") setTextColor:[UIColor colorWithWhite:textcolor alpha:0.9]];
+			if(MSHookIvar<UILabel*>(self, "_secondaryLabel").layer.filters.count) MSHookIvar<UILabel*>(self, "_secondaryLabel").layer.filters = nil;
+			[MSHookIvar<UILabel*>(self, "_secondaryLabel") setTextColor:[UIColor colorWithWhite:textcolor alpha:0.9]];
 
-				[self.primaryLabel setTextColor:[UIColor colorWithWhite:textcolor alpha:0.9]];
+			[self.primaryLabel setTextColor:[UIColor colorWithWhite:textcolor alpha:0.9]];
 
-				[self.routingButton setOverrideUserInterfaceStyle:(textcolor+1)];
-			}
-
-			[self.routingButton setHidden:!showConnectButton];
-			[self.routeLabel setForcesUppercaseText:!stndRouteLabel];
+			[self.routingButton setOverrideUserInterfaceStyle:(textcolor+1)];
 		}
+
+		[self.routingButton setHidden:!showConnectButton];
+		[self.routeLabel setForcesUppercaseText:!stndRouteLabel];
 	}
 }
 %end
@@ -623,12 +594,12 @@
 #pragma mark iOS14
 
 %group Tweak_14
-// transparency, corner radius of media player, and new player height
+// transparency, corner radius, and new player height
 %hook CSAdjunctItemView
 -(void)_updateSizeToMimic{
 	%orig;
 
-	PLPlatterView *platterView = (PLPlatterView*)MSHookIvar<UIView*>(self, "_platterView");
+	PLPlatterView *platterView = MSHookIvar<PLPlatterView *>(self, "_platterView");
 	[platterView.backgroundView setAlpha:transparencyLevel/100];
 	[platterView.backgroundView.layer setCornerRadius:cornerRadius];
 
@@ -807,22 +778,23 @@
 %end
 
 %hook MRUArtworkView
--(void)setArtworkImage:(UIImage *)arg1 {
-	MRUNowPlayingViewController *controller = (MRUNowPlayingViewController *) self.nextResponder.nextResponder.nextResponder.nextResponder;
+// (re)set artwork now that view is enlarged
+-(void)setArtworkImage:(UIImage *)image {
+	MRUNowPlayingViewController *controller = (MRUNowPlayingViewController *) [self _viewControllerForAncestor];
 	if([controller respondsToSelector:@selector(context)] && controller.context == 2){
 		MRMediaRemoteGetNowPlayingInfo(dispatch_get_main_queue(), ^(CFDictionaryRef information){
-			if (information){
+			if(information){
 				NSDictionary* dict = (__bridge NSDictionary *)information;
 				UIImage *highresImage = [UIImage imageWithData:[dict objectForKey:(__bridge NSString*)kMRMediaRemoteNowPlayingInfoArtworkData]];
 				%orig(highresImage);
-			} else {
-				%orig;
 			}
 		});
-	} else {
+	}
+	else{
 		%orig;
 	}
 }
+
 // positioning
 -(void)setFrame:(CGRect)frame{
 	MRUNowPlayingViewController *controller = (MRUNowPlayingViewController *)[self _viewControllerForAncestor];
@@ -838,16 +810,14 @@
 	}
 }
 
-// why is the src icon such a pain to remove/hide?!
+// hide src icon
 -(void)setIconImage:(UIImage *)arg1 {
-	if(!hideSrcIcon){
-		%orig;
-		return;
-	}
+	%orig;
 
 	MRUNowPlayingViewController *controller = (MRUNowPlayingViewController *)[self _viewControllerForAncestor];
-	BOOL hide = ([controller respondsToSelector:@selector(context)] && controller.context == 2);
-	%orig(hide ? nil : arg1);
+	if([controller respondsToSelector:@selector(context)] && controller.context == 2 && hideSrcIcon){
+		%orig(nil);
+	}
 }
 %end
 
