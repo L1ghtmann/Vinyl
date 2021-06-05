@@ -844,6 +844,60 @@
 		%orig;
 	}
 }
+
+// code below fixes the marquee functionality (Really Apple...really?!!)
+-(void)layoutSubviews{
+	%orig;
+
+	MRUNowPlayingViewController *controller = (MRUNowPlayingViewController *)[self _viewControllerForAncestor];
+	if([controller respondsToSelector:@selector(context)] && controller.context == 2){
+		CGRect frame1 = self.titleLabel.frame;
+		CGRect frame2 = self.subtitleLabel.frame;
+
+		// prevent truncation
+		if(frame1.size.width > self.frame.size.width-10){
+			frame1.size.width = self.titleMarqueeView.frame.size.width*2;
+			[self.titleLabel setFrame:frame1];
+		}
+
+		if(frame2.size.width > self.frame.size.width-10){
+			frame2.size.width = self.subtitleMarqueeView.frame.size.width*2;
+			[self.subtitleLabel setFrame:frame2];
+		}
+	}
+}
+
+-(void)updateVisualStyling{
+	%orig;
+
+	MRUNowPlayingViewController *controller = (MRUNowPlayingViewController *)[self _viewControllerForAncestor];
+	if([controller respondsToSelector:@selector(context)] && controller.context == 2){
+		// this restores the functionality, but, left as is, the label content will overlap itself
+		if(self.titleMarqueeView.contentView.frame.size.width > self.frame.size.width-10){
+			[self.titleMarqueeView setFadeEdgeInsets:UIEdgeInsetsMake(0.0, 6.0, 0.0, 7.0)]; // marquee
+			[self.titleMarqueeView setMarqueeEnabled:YES];
+		}
+		else{
+			[self.titleMarqueeView setFadeEdgeInsets:UIEdgeInsetsMake(0.0, 6.0, 0.0, 6.0)]; // default
+			[self.titleMarqueeView setMarqueeEnabled:NO];
+		}
+
+		if(self.subtitleMarqueeView.contentView.frame.size.width > self.frame.size.width-10){
+			[self.subtitleMarqueeView setFadeEdgeInsets:UIEdgeInsetsMake(0.0, 6.0, 0.0, 7.0)]; // marquee
+			[self.subtitleMarqueeView setMarqueeEnabled:YES];
+		}
+		else{
+			[self.subtitleMarqueeView setFadeEdgeInsets:UIEdgeInsetsMake(0.0, 6.0, 0.0, 6.0)]; // default
+			[self.subtitleMarqueeView setMarqueeEnabled:NO];
+		}
+
+		// fix content overlap
+		CGFloat width1 = [self.titleLabel sizeThatFits:CGSizeMake(self.titleLabel.frame.size.height, CGFLOAT_MAX)].width;
+		[self.titleMarqueeView setContentGap:width1/1.75];
+		CGFloat width2 = [self.subtitleLabel sizeThatFits:CGSizeMake(self.subtitleLabel.frame.size.height, CGFLOAT_MAX)].width;
+		[self.subtitleMarqueeView setContentGap:width2/1.75];
+	}
+}
 %end
 
 
