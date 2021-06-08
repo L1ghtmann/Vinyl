@@ -621,8 +621,8 @@
 		[self setTranslatesAutoresizingMaskIntoConstraints:NO];
 		[self.widthAnchor constraintEqualToConstant:width].active = YES;
 		[self.heightAnchor constraintEqualToConstant:height].active = YES;
-		[self.centerXAnchor constraintEqualToAnchor:self.superview.centerXAnchor constant:(width/5)-(controlSpacing/6)+9].active = YES;
-		[self.topAnchor constraintEqualToAnchor:self.superview.topAnchor constant:(playerHeight-(height*1.5))].active = YES;
+		[self.centerXAnchor constraintEqualToAnchor:self.superview.centerXAnchor constant:(width/5)-(controlSpacing/6)+10].active = YES;
+		[self.topAnchor constraintEqualToAnchor:self.superview.topAnchor constant:(playerHeight-(height*1.43))].active = YES;
 
 		[self setClipsToBounds:YES];
 	}
@@ -837,7 +837,7 @@
 			[self.leftAnchor constraintEqualToAnchor:self.superview.leftAnchor constant:artworkSize-5].active = YES;
 		}
 		else{
-			[self.leftAnchor constraintEqualToAnchor:self.superview.leftAnchor constant:artworkSize+10].active = YES;
+			[self.leftAnchor constraintEqualToAnchor:self.superview.leftAnchor constant:artworkSize+8.5].active = YES;
 		}
 	}
 	else{
@@ -856,12 +856,12 @@
 
 		// prevent truncation
 		if(frame1.size.width > self.frame.size.width-10){
-			frame1.size.width = self.titleMarqueeView.frame.size.width*2;
+			frame1.size.width = [self.titleLabel sizeThatFits:CGSizeMake(self.titleLabel.frame.size.height, CGFLOAT_MAX)].width;
 			[self.titleLabel setFrame:frame1];
 		}
 
 		if(frame2.size.width > self.frame.size.width-10){
-			frame2.size.width = self.subtitleMarqueeView.frame.size.width*2;
+			frame2.size.width = [self.subtitleLabel sizeThatFits:CGSizeMake(self.subtitleLabel.frame.size.height, CGFLOAT_MAX)].width;
 			[self.subtitleLabel setFrame:frame2];
 		}
 	}
@@ -892,10 +892,11 @@
 		}
 
 		// fix content overlap
-		CGFloat width1 = [self.titleLabel sizeThatFits:CGSizeMake(self.titleLabel.frame.size.height, CGFLOAT_MAX)].width;
-		[self.titleMarqueeView setContentGap:width1/1.75];
-		CGFloat width2 = [self.subtitleLabel sizeThatFits:CGSizeMake(self.subtitleLabel.frame.size.height, CGFLOAT_MAX)].width;
-		[self.subtitleMarqueeView setContentGap:width2/1.75];
+		CGFloat diff1 = self.titleLabel.frame.size.width-self.titleMarqueeView.contentView.frame.size.width;
+		[self.titleMarqueeView setContentGap:(diff1+35)];
+
+		CGFloat diff2 = self.subtitleLabel.frame.size.width-self.subtitleMarqueeView.contentView.frame.size.width;
+		[self.subtitleMarqueeView setContentGap:(diff2+35)];
 	}
 }
 %end
@@ -938,7 +939,7 @@
 			[self.rightAnchor constraintEqualToAnchor:self.superview.rightAnchor constant:-superview.labelView.routeLabel.frame.size.width-1.5].active = YES;
 		}
 		else{
-			[self.leftAnchor constraintEqualToAnchor:self.superview.leftAnchor constant:artworkSize].active = YES;
+			[self.leftAnchor constraintEqualToAnchor:self.superview.leftAnchor constant:artworkSize-1.5].active = YES;
 		}
 	}
 	else{

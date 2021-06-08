@@ -119,11 +119,11 @@
 
 @interface MPUMarqueeView : UIView
 @property (nonatomic,readonly) UIView * contentView;
--(void)setMarqueeEnabled:(BOOL)arg1 ;
+-(void)setMarqueeEnabled:(BOOL)arg1;
 @property (assign,nonatomic) double contentGap;
 -(void)setContentGap:(double)contentGap;
 @property (assign,nonatomic) UIEdgeInsets fadeEdgeInsets;
--(void)setFadeEdgeInsets:(UIEdgeInsets)fadeEdgeInsets ;
+-(void)setFadeEdgeInsets:(UIEdgeInsets)fadeEdgeInsets;
 @end
 
 @interface MRUNowPlayingLabelView : UIView
