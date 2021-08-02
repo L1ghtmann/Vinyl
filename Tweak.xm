@@ -614,7 +614,7 @@
 // positioning
 -(void)setFrame:(CGRect)frame{
 	MRUNowPlayingViewController *controller = (MRUNowPlayingViewController *)[self _viewControllerForAncestor];
-	if(controller.context == 2){
+	if([controller respondsToSelector:@selector(context)] && controller.context == 2){
 		CGFloat height = frame.size.height-10;
 		CGFloat width = (artworkSize*2)+controlSpacing+height;
 
@@ -636,7 +636,7 @@
 	%orig;
 
 	MRUNowPlayingViewController *controller = (MRUNowPlayingViewController *)[self _viewControllerForAncestor];
-	if(controller.context == 2 && textcolor < 2){
+	if([controller respondsToSelector:@selector(context)] && controller.context == 2 && textcolor < 2){
 		[self.leftButton setStylingProvider:nil];
 		[self.middleButton setStylingProvider:nil];
 		[self.rightButton setStylingProvider:nil];
@@ -659,7 +659,7 @@
 // positioning
 -(void)setFrame:(CGRect)frame{
 	MRUNowPlayingViewController *controller = (MRUNowPlayingViewController *)[self _viewControllerForAncestor];
-	if(controller.context == 2){
+	if([controller respondsToSelector:@selector(context)] && controller.context == 2){
 		CGFloat width = frame.size.width-((frame.origin.x+45)*2);
 		CGFloat height = frame.size.height/2;
 
@@ -679,7 +679,7 @@
 	%orig;
 
 	MRUNowPlayingViewController *controller = (MRUNowPlayingViewController *)[self _viewControllerForAncestor];
-	if(controller.context == 2){
+	if([controller respondsToSelector:@selector(context)] && controller.context == 2){
 		[self.knobView setHidden:YES];
 		[self.elapsedTimeLabel setHidden:YES];
 		[self.remainingTimeLabel setHidden:YES];
@@ -695,7 +695,7 @@
 	%orig;
 
 	MRUNowPlayingViewController *controller = (MRUNowPlayingViewController *)[self _viewControllerForAncestor];
-	if(controller.context == 2){
+	if([controller respondsToSelector:@selector(context)] && controller.context == 2){
 		if(configuration == 0 || configuration == 2){
 			[self setHidden:YES];
 		}
@@ -718,7 +718,7 @@
 %hook MRUNowPlayingControlsView
 -(void)setFrame:(CGRect)frame{
 	MRUNowPlayingViewController *controller = (MRUNowPlayingViewController *)[self _viewControllerForAncestor];
-	if(controller.context == 2){
+	if([controller respondsToSelector:@selector(context)] && controller.context == 2){
 		[self setTranslatesAutoresizingMaskIntoConstraints:NO];
 		[self.widthAnchor constraintEqualToConstant:frame.size.width].active = YES;
 		[self.heightAnchor constraintEqualToConstant:frame.size.height].active = YES;
@@ -737,7 +737,7 @@
 // positioning
 -(void)setFrame:(CGRect)frame{
 	MRUNowPlayingViewController *controller = (MRUNowPlayingViewController *)[self _viewControllerForAncestor];
-	if(controller.context == 2){
+	if([controller respondsToSelector:@selector(context)] && controller.context == 2){
 		CGFloat width = frame.size.width-((frame.origin.x+45)*2);
 		CGFloat height = frame.size.height/2;
 
@@ -757,7 +757,7 @@
 	%orig;
 
 	MRUNowPlayingViewController *controller = (MRUNowPlayingViewController *)[self _viewControllerForAncestor];
-	if(controller.context == 2){
+	if([controller respondsToSelector:@selector(context)] && controller.context == 2){
 		if(configuration == 0 || configuration == 1){
 			[self setHidden:YES];
 		}
