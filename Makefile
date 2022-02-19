@@ -14,6 +14,6 @@ Vinyl_PRIVATE_FRAMEWORKS = MediaRemote
 
 include $(THEOS_MAKE_PATH)/tweak.mk
 
-SUBPROJECTS += vinylprefs
+SUBPROJECTS += VinylPrefs
 
 include $(THEOS_MAKE_PATH)/aggregate.mk

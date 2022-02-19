@@ -1,8 +1,11 @@
-#import "Tweak.h"
+//
+//	Tweak.xm
+//	Vinyl
+//
+//	Created by Lightmann during COVID-19
+//
 
-// Lightmann
-// Created during COVID-19
-// Vinyl
+#import "Tweak.h"
 
 #define playerHeight 132.5
 #define artworkSize 120
@@ -25,9 +28,12 @@
 	[platterView.mainOverlayView.layer setCornerRadius:cornerRadius];
 	[platterView.backgroundMaterialView.layer setCornerRadius:cornerRadius];
 	[platterView.backgroundView.layer setCornerRadius:cornerRadius];
+}
 
-	// Using constraints so it's dynamic and works with listview (parent container)
-	[self.heightAnchor constraintEqualToConstant:playerHeight].active = true;
+// thanks Xyaman for this method
+-(CGSize)intrinsicContentSize{
+	CGSize orig = %orig;
+	return CGSizeMake(orig.width, playerHeight);
 }
 %end
 
@@ -189,11 +195,11 @@
 	%orig;
 
 	MRMediaRemoteGetNowPlayingInfo(dispatch_get_main_queue(), ^(CFDictionaryRef information){
-        if (information){
-        	NSDictionary* dict = (__bridge NSDictionary *)information;
-        	highresImage = [UIImage imageWithData:[dict objectForKey:(__bridge NSString*)kMRMediaRemoteNowPlayingInfoArtworkData]];
+		if (information){
+			NSDictionary* dict = (__bridge NSDictionary *)information;
+			highresImage = [UIImage imageWithData:[dict objectForKey:(__bridge NSString*)kMRMediaRemoteNowPlayingInfoArtworkData]];
 		}
-    });
+	});
 }
 %end
 
@@ -320,9 +326,11 @@
 	PLPlatterView *platterView = MSHookIvar<PLPlatterView *>(self, "_platterView");
 	[platterView.backgroundView setAlpha:transparencyLevel/100];
 	[platterView.backgroundView.layer setCornerRadius:cornerRadius];
+}
 
-	// Using constraints so it's dynamic and works with listview (parent container)
-	[self.heightAnchor constraintEqualToConstant:playerHeight].active = true;
+-(CGSize)intrinsicContentSize{
+	CGSize orig = %orig;
+	return CGSizeMake(orig.width, playerHeight);
 }
 %end
 
@@ -473,11 +481,11 @@
 	%orig;
 
 	MRMediaRemoteGetNowPlayingInfo(dispatch_get_main_queue(), ^(CFDictionaryRef information){
-        if (information){
-        	NSDictionary* dict = (__bridge NSDictionary *)information;
-        	highresImage = [UIImage imageWithData:[dict objectForKey:(__bridge NSString*)kMRMediaRemoteNowPlayingInfoArtworkData]];
+		if (information){
+			NSDictionary* dict = (__bridge NSDictionary *)information;
+			highresImage = [UIImage imageWithData:[dict objectForKey:(__bridge NSString*)kMRMediaRemoteNowPlayingInfoArtworkData]];
 		}
-    });
+	});
 }
 %end
 
@@ -602,9 +610,11 @@
 	PLPlatterView *platterView = MSHookIvar<PLPlatterView *>(self, "_platterView");
 	[platterView.backgroundView setAlpha:transparencyLevel/100];
 	[platterView.backgroundView.layer setCornerRadius:cornerRadius];
+}
 
-	// Using constraints so it's dynamic and works with listview (parent container)
-	[self.heightAnchor constraintEqualToConstant:playerHeight].active = true;
+-(CGSize)intrinsicContentSize{
+	CGSize orig = %orig;
+	return CGSizeMake(orig.width, playerHeight);
 }
 %end
 
